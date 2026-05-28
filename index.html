@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Domaine de Sainte Anne — Vigneron à Marcorignan, Aude</title>
+  <meta name="description" content="Domaine de Sainte Anne, vigneron indépendant à Marcorignan (Aude). Vins IGP Pays d'Aude frais, fruités et accessibles. Dégustation, visite de cave, commande en ligne." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bordeaux: #5B3B49;
+      --bordeaux-dark: #3a2530;
+      --bordeaux-light: #7a5264;
+      --creme: #B4A5AC;
+      --creme-light: #e8e0e3;
+      --creme-pale: #f5f0f2;
+      --noir: #171717;
+      --blanc: #fdfbfc;
+      --or: #c9a84c;
+      --or-light: #e8d5a3;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Jost', sans-serif; background: var(--blanc); color: var(--noir); overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px; background: transparent;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    nav.scrolled { background: rgba(23,23,23,0.96); box-shadow: 0 1px 0 rgba(201,168,76,0.2); }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo img { height: 44px; width: 44px; border-radius: 50%; object-fit: cover; }
+    .nav-logo-text { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; line-height: 1.5; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.8); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--or); }
+    .nav-cta { text-decoration: none; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--noir); background: var(--or); padding: 10px 24px; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--or-light); }
+    .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-burger span { width: 24px; height: 1.5px; background: #fff; transition: all 0.3s; }
+
+    /* HERO */
+    .hero { position: relative; height: 100vh; min-height: 620px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(58,37,48,0.82) 0%, rgba(23,23,23,0.6) 55%, rgba(23,23,23,0.85) 100%); }
+    .hero-content { position: relative; text-align: center; color: #fff; padding: 0 1.5rem; max-width: 780px; }
+    .hero-eyebrow { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--or); margin-bottom: 1.5rem; font-weight: 400; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 7vw, 5.2rem); font-weight: 400; line-height: 1.1; margin-bottom: 1.5rem; }
+    .hero-title em { font-style: italic; color: var(--or-light); }
+    .hero-subtitle { font-size: 1rem; font-weight: 300; letter-spacing: 0.03em; color: rgba(255,255,255,0.75); line-height: 1.85; margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { display: inline-block; text-decoration: none; background: var(--or); color: var(--noir); font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 36px; transition: background 0.2s, transform 0.2s; }
+    .btn-primary:hover { background: var(--or-light); transform: translateY(-1px); }
+    .btn-outline { display: inline-block; text-decoration: none; border: 1px solid rgba(255,255,255,0.4); color: #fff; font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 36px; transition: border-color 0.2s, color 0.2s; }
+    .btn-outline:hover { border-color: var(--or); color: var(--or); }
+    .hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; color: rgba(255,255,255,0.4); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; }
+    .hero-scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent); animation: scrollLine 2s ease-in-out infinite; }
+    @keyframes scrollLine { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+
+    /* SECTION BASE */
+    section { padding: 6rem 2rem; }
+    .section-container { max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 1rem; font-weight: 500; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1.2; color: var(--noir); margin-bottom: 1.5rem; }
+    .section-title em { font-style: italic; color: var(--bordeaux); }
+    .divider { width: 40px; height: 1px; background: var(--or); margin-bottom: 2rem; }
+
+    /* HISTOIRE */
+    .histoire { background: var(--creme-pale); }
+    .histoire-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .histoire-images { position: relative; padding-bottom: 2rem; }
+    .histoire-img-main { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+    .histoire-img-overlay { position: absolute; bottom: 0; right: -2rem; width: 52%; aspect-ratio: 4/3; object-fit: cover; border: 5px solid var(--blanc); object-position: center top; }
+    .histoire-text p { font-size: 1rem; font-weight: 300; line-height: 1.9; color: #444; margin-bottom: 1.5rem; }
+    .histoire-stat-row { display: flex; gap: 2.5rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--creme); }
+    .histoire-stat-number { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 400; color: var(--bordeaux); line-height: 1; }
+    .histoire-stat-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-top: 6px; font-weight: 400; }
+
+    /* VIGNOBLE */
+    .vignoble-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .vignoble-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
+    .vignoble-text p { font-size: 1rem; font-weight: 300; line-height: 1.9; color: #444; margin-bottom: 1.5rem; }
+    .cepages-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1.5rem; }
+    .cepage-tag { background: var(--bordeaux); color: rgba(255,255,255,0.9); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 14px; font-weight: 400; }
+
+    /* CAVE */
+    .cave { background: var(--noir); }
+    .cave .section-eyebrow { color: var(--or); }
+    .cave .section-title { color: #fff; }
+    .cave .section-title em { color: var(--or-light); }
+    .cave .divider { background: var(--or); }
+    .cave-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .cave-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .cave-text p { font-size: 1rem; font-weight: 300; line-height: 1.9; color: rgba(255,255,255,0.7); margin-bottom: 1.5rem; }
+
+    /* VINS */
+    .vins { background: var(--creme-pale); }
+    .vins-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3rem; gap: 2rem; flex-wrap: wrap; }
+    .vins-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--creme); }
+    .vin-card { background: var(--blanc); overflow: hidden; text-decoration: none; color: inherit; display: block; transition: background 0.3s; }
+    .vin-card:hover { background: #f9f4f6; }
+    .vin-img-wrap { overflow: hidden; }
+    .vin-card-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; transition: transform 0.5s; }
+    .vin-card:hover .vin-card-img { transform: scale(1.04); }
+    .vin-card-body { padding: 1.5rem; }
+    .vin-card-type { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 0.5rem; }
+    .vin-card-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400; color: var(--bordeaux-dark); margin-bottom: 0.5rem; }
+    .vin-card-price { font-size: 0.9rem; font-weight: 500; color: var(--or); margin-bottom: 0.75rem; }
+    .vin-card-desc { font-size: 0.88rem; font-weight: 300; line-height: 1.7; color: #666; }
+    .vins-livraison { margin-top: 2.5rem; padding: 1.5rem 2rem; background: var(--bordeaux); color: rgba(255,255,255,0.85); font-size: 0.88rem; font-weight: 300; line-height: 1.8; }
+    .vins-livraison strong { color: #fff; font-weight: 500; }
+
+    /* OENOTOURISME */
+    .oeno { background: var(--blanc); }
+    .oeno-intro { text-align: center; max-width: 620px; margin: 0 auto 4rem; }
+    .oeno-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--creme-light); }
+    .oeno-card { background: var(--blanc); padding: 0; overflow: hidden; }
+    .oeno-card-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .oeno-card-body { padding: 1.75rem; }
+    .oeno-card-icon { font-size: 1.5rem; margin-bottom: 0.8rem; display: block; }
+    .oeno-card-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 0.75rem; color: var(--bordeaux-dark); }
+    .oeno-card-price { font-size: 0.85rem; font-weight: 500; color: var(--or); margin: 0.5rem 0; }
+    .oeno-card p { font-size: 0.88rem; font-weight: 300; line-height: 1.75; color: #666; margin-bottom: 0.6rem; }
+
+    /* GALERIE */
+    .galerie { padding: 0; }
+    .galerie-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 260px; gap: 4px; }
+    .galerie-item { overflow: hidden; }
+    .galerie-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s; }
+    .galerie-item:hover img { transform: scale(1.05); }
+    .galerie-item--tall { grid-row: span 2; }
+    .galerie-item--wide { grid-column: span 2; }
+
+    /* CONTACT */
+    .contact { background: var(--bordeaux); }
+    .contact .section-eyebrow { color: var(--or-light); }
+    .contact .section-title { color: #fff; }
+    .contact .section-title em { color: var(--or-light); }
+    .contact .divider { background: var(--or); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .contact-info p { font-size: 0.95rem; font-weight: 300; line-height: 1.85; color: rgba(255,255,255,0.75); margin-bottom: 1.5rem; }
+    .contact-links { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+    .contact-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: rgba(255,255,255,0.75); font-size: 0.9rem; font-weight: 300; transition: color 0.2s; }
+    .contact-link:hover { color: var(--or-light); }
+    .contact-link-icon { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .horaires { border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1.5rem; margin-top: 0.5rem; }
+    .horaires h4 { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--or); margin-bottom: 1rem; font-weight: 400; }
+    .horaire-row { display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 300; color: rgba(255,255,255,0.65); padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .horaire-row.open { color: rgba(255,255,255,0.85); }
+    .contact-map { width: 100%; aspect-ratio: 4/3; border: 0; filter: grayscale(30%) contrast(1.1); }
+    .contact-note { font-size: 0.82rem; font-weight: 300; color: rgba(255,255,255,0.5); font-style: italic; margin-top: 1rem; line-height: 1.7; }
+
+    /* FOOTER */
+    footer { background: var(--noir); border-top: 1px solid rgba(201,168,76,0.15); padding: 2.5rem 2rem; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1rem; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; }
+    .footer-logo strong { color: rgba(255,255,255,0.8); font-weight: 600; }
+    .footer-links { display: flex; gap: 2rem; list-style: none; }
+    .footer-links a { text-decoration: none; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--or); }
+    .footer-legal { font-size: 11px; color: rgba(255,255,255,0.2); }
+    .abus-banner { background: var(--bordeaux-dark); border-top: 1px solid rgba(201,168,76,0.1); padding: 0.6rem 2rem; text-align: center; }
+    .abus-banner p { font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); }
+
+    /* MOBILE MENU */
+    .mobile-menu { display: none; position: fixed; inset: 0; z-index: 99; background: var(--noir); flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { text-decoration: none; font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 400; color: #fff; transition: color 0.2s; }
+    .mobile-menu a:hover { color: var(--or); }
+
+    /* ANIMATIONS */
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up:nth-child(2) { transition-delay: 0.1s; }
+    .fade-up:nth-child(3) { transition-delay: 0.2s; }
+    .fade-up:nth-child(4) { transition-delay: 0.3s; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-burger { display: flex; }
+      .histoire-grid, .vignoble-grid, .cave-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .histoire-img-overlay { right: 0; }
+      .vignoble-grid .vignoble-img-col { order: -1; }
+      .vins-grid { grid-template-columns: 1fr 1fr; }
+      .oeno-grid { grid-template-columns: 1fr; }
+      .galerie-grid { grid-template-columns: repeat(2, 1fr); }
+      .galerie-item--tall { grid-row: span 1; }
+      .galerie-item--wide { grid-column: span 2; }
+      section { padding: 4rem 1.5rem; }
+    }
+    @media (max-width: 560px) {
+      .vins-grid { grid-template-columns: 1fr; }
+      .galerie-grid { grid-template-columns: 1fr; }
+      .galerie-item--wide { grid-column: span 1; }
+      .histoire-stat-row { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#accueil" class="nav-logo">
+    <img src="images/logo.png" alt="Logo Domaine de Sainte Anne" />
+    <div class="nav-logo-text">Domaine de<br>Sainte Anne</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#histoire">Notre histoire</a></li>
+    <li><a href="#vins">Nos vins</a></li>
+    <li><a href="#oenotourisme">Œnotourisme</a></li>
+    <li><a href="#contact">Visiter</a></li>
+  </ul>
+  <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="nav-cta">Commander</a>
+  <div class="nav-burger" id="burgerBtn" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#histoire" onclick="toggleMenu()">Notre histoire</a>
+  <a href="#vins" onclick="toggleMenu()">Nos vins</a>
+  <a href="#oenotourisme" onclick="toggleMenu()">Œnotourisme</a>
+  <a href="#contact" onclick="toggleMenu()">Visiter</a>
+  <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" style="color:var(--or);">Commander →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="accueil">
+  <div class="hero-bg">
+    <img src="images/famille-vignes.jpeg" alt="Christophe et son oncle dans les vignes du Domaine de Sainte Anne au coucher de soleil" />
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Vigneron à Marcorignan · Aude · Pays d'Oc</p>
+    <h1 class="hero-title">Une nouvelle <em>génération</em><br>de vins du sud.</h1>
+    <p class="hero-subtitle">À 10 minutes de Narbonne, entre les Corbières et le Minervois, le Domaine de Sainte Anne propose des vins légers et fruités — avec une envie, celle de partager le vin autrement.</p>
+    <div class="hero-actions">
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="btn-primary">Commander nos vins</a>
+      <a href="#histoire" class="btn-outline">Découvrir le domaine</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Défiler</span>
+  </div>
+</section>
+
+<!-- NOTRE HISTOIRE -->
+<section class="histoire" id="histoire">
+  <div class="section-container">
+    <div class="histoire-grid">
+      <div class="histoire-images">
+        <img src="images/vigneron-travail.jpeg" alt="Vigneron travaillant dans les vignes du Domaine de Sainte Anne" class="histoire-img-main" />
+        <img src="images/famille-vignes.jpeg" alt="Christophe avec son oncle dans les vignes" class="histoire-img-overlay" />
+      </div>
+      <div class="histoire-text">
+        <p class="section-eyebrow fade-up">Notre histoire</p>
+        <h2 class="section-title fade-up">Transmis depuis <em>sept générations</em></h2>
+        <div class="divider fade-up"></div>
+        <p class="fade-up">Le Domaine de Sainte Anne est un domaine familial situé à Marcorignan, à 10 minutes de Narbonne, entre les Corbières et le Minervois. Transmis depuis sept générations, il est repris officiellement par Christophe en 2023 avec l'envie de faire évoluer l'exploitation tout en conservant son identité et son ancrage local.</p>
+        <p class="fade-up">Après plusieurs années de travail aux côtés de son oncle, Christophe apporte un regard neuf : des vins plus frais, plus fruités, pensés pour le plaisir et le partage — sans renoncer à l'identité profonde de ce terroir méditerranéen.</p>
+        <p class="fade-up">Aujourd'hui, nous produisons des vins en IGP Pays d'Aude et Côteaux de Narbonne, dans un style accessible qui reflète notre envie de partager le vin autrement.</p>
+        <div class="histoire-stat-row">
+          <div class="histoire-stat fade-up">
+            <div class="histoire-stat-number">15 ha</div>
+            <div class="histoire-stat-label">de vignes</div>
+          </div>
+          <div class="histoire-stat fade-up">
+            <div class="histoire-stat-number">7</div>
+            <div class="histoire-stat-label">générations</div>
+          </div>
+          <div class="histoire-stat fade-up">
+            <div class="histoire-stat-number">2023</div>
+            <div class="histoire-stat-label">nouvelle dynamique</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LE VIGNOBLE -->
+<section id="vignoble">
+  <div class="section-container">
+    <div class="vignoble-grid">
+      <div>
+        <p class="section-eyebrow fade-up">Le vignoble</p>
+        <h2 class="section-title fade-up">15 hectares au cœur<br>du <em>Pays d'Aude</em></h2>
+        <div class="divider fade-up"></div>
+        <div class="vignoble-text">
+          <p class="fade-up">Le Domaine s'étend sur 15 hectares de vignes autour de Marcorignan, au cœur du Pays d'Aude. Nous travaillons des cépages adaptés au climat méditerranéen et aux terroirs locaux, dans le respect du sol et des saisons.</p>
+          <p class="fade-up">Notre objectif : élaborer des vins frais, équilibrés et digestes, aux degrés d'alcool modérés — autour de 11,5 % à 12,5 % — loin des profils très puissants souvent associés au Sud. Des vins pensés pour les repas, les apéritifs, les moments de convivialité.</p>
+          <p class="fade-up">En tant que vigneron indépendant, nous assurons directement chaque étape : travail de la vigne, vinification, élevage et mise en bouteille au Domaine.</p>
+        </div>
+        <div class="cepages-list fade-up">
+          <span class="cepage-tag">Cinsault</span>
+          <span class="cepage-tag">Caladoc</span>
+          <span class="cepage-tag">Marselan</span>
+          <span class="cepage-tag">Grenache</span>
+          <span class="cepage-tag">Alicante</span>
+        </div>
+      </div>
+      <div class="vignoble-img-col fade-up">
+        <img src="images/grappes-raisin.jpeg" alt="Grappes de raisin noir mûres au Domaine de Sainte Anne" class="vignoble-img" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LA CAVE -->
+<section class="cave" id="cave">
+  <div class="section-container">
+    <div class="cave-grid">
+      <div>
+        <p class="section-eyebrow fade-up">La cave</p>
+        <h2 class="section-title fade-up">Un savoir-faire<br><em>historique</em> préservé</h2>
+        <div class="divider fade-up"></div>
+        <div class="cave-text">
+          <p class="fade-up">Le Domaine est installé en cœur du village de Marcorignan, dans une cave viticole traditionnelle typique de la région. Les cuves en béton d'origine sont toujours utilisées, dans la continuité d'un savoir-faire historique profondément lié au patrimoine viticole du Narbonnais.</p>
+          <p class="fade-up">De la réception de la vendange à la mise en bouteille, chaque étape est maîtrisée par Christophe. Cette indépendance nous permet d'adapter notre travail au millésime, d'expérimenter, et de construire des vins qui nous ressemblent.</p>
+        </div>
+      </div>
+      <div class="fade-up">
+        <img src="images/cuves-beton.jpeg" alt="Cuves en béton d'origine de la cave du Domaine de Sainte Anne" class="cave-img" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOS VINS -->
+<section class="vins" id="vins">
+  <div class="section-container">
+    <div class="vins-header">
+      <div>
+        <p class="section-eyebrow">Nos cuvées</p>
+        <h2 class="section-title">Des vins frais, fruités<br>et <em>accessibles</em></h2>
+        <div class="divider"></div>
+      </div>
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="btn-primary" style="flex-shrink:0;">Voir toutes les cuvées →</a>
+    </div>
+    <div class="vins-grid">
+      <!-- Blanc -->
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="vin-card fade-up">
+        <div class="vin-img-wrap">
+          <img src="images/cave-bouteilles.jpeg" alt="Vins blancs du Domaine de Sainte Anne" class="vin-card-img" style="object-position:left center;" />
+        </div>
+        <div class="vin-card-body">
+          <p class="vin-card-type">Blanc · IGP Pays d'Aude</p>
+          <h3 class="vin-card-name">À Part Égale 2025</h3>
+          <p class="vin-card-price">8,50 € / bouteille</p>
+          <p class="vin-card-desc">Un blanc frais et fruité, reflet de nos terroirs méditerranéens. Digeste et équilibré, pensé pour l'apéritif et les repas.</p>
+        </div>
+      </a>
+      <!-- Rosé -->
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="vin-card fade-up">
+        <div class="vin-img-wrap">
+          <img src="images/apero-vins.jpeg" alt="Rosé et rouge du Domaine de Sainte Anne avec planche charcuterie" class="vin-card-img" style="object-position:center 30%;" />
+        </div>
+        <div class="vin-card-body">
+          <p class="vin-card-type">Rosé · Caladoc</p>
+          <h3 class="vin-card-name">Rosé 2024 & Faire Light 2025</h3>
+          <p class="vin-card-price">7,20 € / bouteille</p>
+          <p class="vin-card-desc">Deux rosés dans des styles différents — l'un classique et fruité, l'autre encore plus léger. Idéaux pour les moments de partage estivaux.</p>
+        </div>
+      </a>
+      <!-- Rouge -->
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="vin-card fade-up">
+        <div class="vin-img-wrap">
+          <img src="images/vinification.jpeg" alt="Vinification au Domaine de Sainte Anne" class="vin-card-img" style="object-position:center top;" />
+        </div>
+        <div class="vin-card-body">
+          <p class="vin-card-type">Rouge · Cinsault · Caladoc · Marselan</p>
+          <h3 class="vin-card-name">Rouge Caladoc Cinsault & Entre Deux</h3>
+          <p class="vin-card-price">À partir de 7,90 €</p>
+          <p class="vin-card-desc">Des rouges légers et fruités, aux degrés modérés. Le Caladoc-Cinsault, gouleyant et facile à boire ; l'Entre Deux, plus structuré pour la table.</p>
+        </div>
+      </a>
+    </div>
+    <div class="vins-livraison fade-up">
+      <strong>Commander en ligne :</strong> vins envoyés par cartons de 6 bouteilles — panachage libre entre les cuvées. Frais de port offerts dès 100€ d'achat (20€ en dessous). Paiement sécurisé &amp; expédition depuis le Domaine. <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" style="color:var(--or-light); text-decoration:none;">Accéder à la boutique →</a>
+    </div>
+  </div>
+</section>
+
+<!-- OENOTOURISME -->
+<section class="oeno" id="oenotourisme">
+  <div class="section-container">
+    <div class="oeno-intro fade-up">
+      <p class="section-eyebrow">Œnotourisme</p>
+      <h2 class="section-title">Découvrir le <em>Domaine</em></h2>
+      <div class="divider" style="margin:0 auto 1.5rem;"></div>
+      <p style="font-size:0.95rem;font-weight:300;line-height:1.85;color:#666;">Au Domaine de Sainte Anne, nous aimons le vin simple, vivant et convivial. Que ce soit pour une dégustation, une visite de cave ou un apéritif entre amis, nous vous accueillons dans une ambiance chaleureuse et authentique.</p>
+    </div>
+    <div class="oeno-grid">
+      <!-- Dégustation -->
+      <div class="oeno-card fade-up">
+        <img src="images/degustation-caveau.jpeg" alt="Dégustation au caveau du Domaine de Sainte Anne" class="oeno-card-img" />
+        <div class="oeno-card-body">
+          <span class="oeno-card-icon">🍷</span>
+          <h3 class="oeno-card-title">Dégustation au caveau</h3>
+          <p class="oeno-card-price">Gratuite</p>
+          <p>Découvrez nos vins lors d'une dégustation conviviale et échangez avec nous sur notre manière de travailler la vigne et le vin.</p>
+          <p><em>Aux horaires du caveau ou sur rendez-vous. Français, Anglais, Espagnol.</em></p>
+        </div>
+      </div>
+      <!-- Visite de cave -->
+      <div class="oeno-card fade-up">
+        <img src="images/cuves-beton.jpeg" alt="Visite de la cave et des cuves en béton" class="oeno-card-img" />
+        <div class="oeno-card-body">
+          <span class="oeno-card-icon">🏺</span>
+          <h3 class="oeno-card-title">Visite de la cave</h3>
+          <p class="oeno-card-price">8 € / personne <span style="font-weight:300;color:#888;">(offerte dès l'achat d'un carton)</span></p>
+          <p>De la vendange à la mise en bouteille, explorez l'envers du décor : cuves, pressoir, processus de vinification dans une cave historique.</p>
+          <p><em>Lundi, mercredi, vendredi à 18h — durée 45 min.</em></p>
+        </div>
+      </div>
+      <!-- Apéro -->
+      <div class="oeno-card fade-up">
+        <img src="images/apero-vins.jpeg" alt="Apéro dégustation avec planche charcuterie au Domaine" class="oeno-card-img" />
+        <div class="oeno-card-body">
+          <span class="oeno-card-icon">🧀</span>
+          <h3 class="oeno-card-title">Apéro dégustation</h3>
+          <p class="oeno-card-price">À partir de 10 € / planche</p>
+          <p>Planches apéro à partager — charcuterie, fromages et suggestions du moment — pour accompagner votre dégustation au caveau.</p>
+          <p><em>Format flexible selon vos envies. Réservation conseillée.</em></p>
+          <a href="tel:0763721236" style="display:inline-block;margin-top:0.75rem;font-size:0.85rem;color:var(--bordeaux);text-decoration:none;font-weight:500;">📞 07 63 72 12 36</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIE PHOTOS -->
+<section class="galerie">
+  <div class="galerie-grid">
+    <div class="galerie-item galerie-item--tall">
+      <img src="images/taille-vigne.jpeg" alt="Taille de la vigne au Domaine de Sainte Anne" />
+    </div>
+    <div class="galerie-item">
+      <img src="images/grappes-raisin.jpeg" alt="Grappes de raisin noir Caladoc" />
+    </div>
+    <div class="galerie-item">
+      <img src="images/vigneron-travail.jpeg" alt="Vigneron au travail dans les vignes" />
+    </div>
+    <div class="galerie-item">
+      <img src="images/vinification.jpeg" alt="Vinification et soutirage au Domaine" />
+    </div>
+    <div class="galerie-item galerie-item--wide">
+      <img src="images/degustation-caveau.jpeg" alt="Dégustation de vins au caveau" />
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT / VISITER -->
+<section class="contact" id="contact">
+  <div class="section-container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p class="section-eyebrow">Rendez-nous visite</p>
+        <h2 class="section-title">7 avenue de Narbonne,<br><em>Marcorignan</em></h2>
+        <div class="divider"></div>
+        <p>Le caveau n'est pas toujours ouvert, car on est souvent dehors à bichonner nos vignes. Mais un petit message, et on vous ouvre avec plaisir !</p>
+        <div class="contact-links">
+          <a href="tel:0763721236" class="contact-link">
+            <div class="contact-link-icon">📞</div>
+            <span>07 63 72 12 36</span>
+          </a>
+          <a href="mailto:domainedesainteanne@gmail.com" class="contact-link">
+            <div class="contact-link-icon">✉</div>
+            <span>domainedesainteanne@gmail.com</span>
+          </a>
+          <a href="https://www.instagram.com/domainesteanne" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon">📸</div>
+            <span>@domainesteanne</span>
+          </a>
+          <a href="https://www.facebook.com" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon">f</div>
+            <span>SCEA Domaine de Sainte Anne</span>
+          </a>
+          <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon">🛒</div>
+            <span>Boutique en ligne</span>
+          </a>
+        </div>
+        <div class="horaires">
+          <h4>Horaires d'ouverture du caveau</h4>
+          <div class="horaire-row open"><span>Lundi</span><span>18:00 – 19:30</span></div>
+          <div class="horaire-row"><span>Mardi</span><span>Fermé</span></div>
+          <div class="horaire-row open"><span>Mercredi</span><span>18:00 – 19:30</span></div>
+          <div class="horaire-row"><span>Jeudi</span><span>Fermé</span></div>
+          <div class="horaire-row open"><span>Vendredi</span><span>18:00 – 19:30</span></div>
+          <div class="horaire-row"><span>Samedi</span><span>Fermé</span></div>
+          <div class="horaire-row"><span>Dimanche</span><span>Fermé</span></div>
+          <p class="contact-note">Langues parlées : Français, Anglais, Espagnol.<br>Paiements : espèces, CB, chèque.<br>Ouverture possible sur rendez-vous en dehors des horaires.</p>
+        </div>
+      </div>
+      <div>
+        <iframe
+          class="contact-map"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2842.5!2d3.0300!3d43.2100!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12b1a6f2f2a2a2a2%3A0x0!2s7+Avenue+de+Narbonne%2C+11120+Marcorignan!5e0!3m2!1sfr!2sfr!4v1"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Carte — Domaine de Sainte Anne, 7 avenue de Narbonne, Marcorignan"
+        ></iframe>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-top:1rem;">7 avenue de Narbonne, 11120 Marcorignan</p>
+        <div style="margin-top:2rem;">
+          <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;">Commander nos vins en ligne →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Domaine de <strong>Sainte Anne</strong><br><span style="font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.15em;color:rgba(255,255,255,0.2);">VIGNERON À MARCORIGNAN · AUDE</span></div>
+    <ul class="footer-links">
+      <li><a href="#histoire">Histoire</a></li>
+      <li><a href="#vins">Nos vins</a></li>
+      <li><a href="#oenotourisme">Œnotourisme</a></li>
+      <li><a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener">Boutique</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <p class="footer-legal">© 2025 SCEA Domaine de Sainte Anne</p>
+  </div>
+</footer>
+<div class="abus-banner">
+  <p>L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Interdit aux mineurs de moins de 18 ans.</p>
+</div>
+
+<script>
+  // NAV SCROLL
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // MOBILE MENU
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // FADE UP OBSERVER
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
