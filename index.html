@@ -34,8 +34,8 @@
       transition: background 0.4s, box-shadow 0.4s;
     }
     nav.scrolled { background: rgba(23,23,23,0.97); box-shadow: 0 1px 0 rgba(201,168,76,0.2); }
-    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-    .nav-logo img { height: 80px; width: 80px; border-radius: 0; object-fit: contain; }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; position: absolute; left: 2.5rem; top: 0; height: 100%; z-index: 10; }
+    .nav-logo img { height: 130px; width: auto; object-fit: contain; }
     .nav-logo-text { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; line-height: 1.5; }
     .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
     .nav-links a { text-decoration: none; font-size: 11px; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.8); transition: color 0.2s; }
@@ -265,7 +265,7 @@
 <!-- NAV -->
 <nav id="navbar">
   <a href="#accueil" class="nav-logo">
-    <img src="images/Logo steAnne.png" alt="Logo Domaine de Sainte Anne" />
+    <img src="images/LOGO - en long.png" alt="Logo Domaine de Sainte Anne" />
   </a>
   <ul class="nav-links">
     <li><a href="#histoire" data-lang="fr">Notre histoire</a><a href="#histoire" data-lang="en" style="display:none">Our story</a></li>
