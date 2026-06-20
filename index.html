@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bordeaux: #61394a;
+      --bordeaux: #5B3B49;
       --bordeaux-dark: #3a2530;
       --bordeaux-light: #7a5264;
       --creme: #B4A5AC;
@@ -53,7 +53,7 @@
     .hero { position: relative; height: 100vh; min-height: 640px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .hero-bg { position: absolute; inset: 0; }
     .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(58,37,48,0.55) 0%, rgba(23,23,23,0.35) 50%, rgba(23,23,23,0.55) 100%); }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(58,37,48,0.88) 0%, rgba(23,23,23,0.55) 50%, rgba(23,23,23,0.82) 100%); }
     .hero-content { position: relative; text-align: center; color: #fff; padding: 0 1.5rem; max-width: 820px; }
     .hero-eyebrow { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--or); margin-bottom: 1.5rem; font-weight: 400; }
     .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 7.5vw, 5.8rem); font-weight: 400; line-height: 1.08; margin-bottom: 1.8rem; }
@@ -68,7 +68,7 @@
     .hero-stat-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 5px; display: block; }
 
     .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn-primary { display: inline-block; text-decoration: none; background: var(--or); color: var(--noir); font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 36px; transition: background 0.2s, transform 0.2s; border-radius: 12px; }
+    .btn-primary { display: inline-block; text-decoration: none; background: var(--or); color: var(--noir); font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 36px; transition: background 0.2s, transform 0.2s; }
     .btn-primary:hover { background: var(--or-light); transform: translateY(-1px); }
     .btn-outline { display: inline-block; text-decoration: none; border: 1px solid rgba(255,255,255,0.4); color: #fff; font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 36px; transition: border-color 0.2s, color 0.2s; }
     .btn-outline:hover { border-color: var(--or); color: var(--or); }
@@ -262,25 +262,6 @@
 </head>
 <body>
 
-<!-- AGE CHECKER MODAL -->
-<div class="age-checker" id="ageChecker" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:200;">
-  <div style="background:#61394a;color:#fff;padding:3rem;text-align:center;max-width:400px;border-radius:4px;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:1rem;" data-lang="fr">Vérification d'âge</h2>
-    <h2 style="font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:1rem;" data-lang="en" style="display:none">Age verification</h2>
-    <p style="font-size:0.95rem;line-height:1.8;margin-bottom:1.5rem;" data-lang="fr">Vous devez être majeur pour visiter ce site.</p>
-    <p style="font-size:0.95rem;line-height:1.8;margin-bottom:1.5rem;" data-lang="en" style="display:none">You must be 18 or older to visit this site.</p>
-    <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;margin:1.5rem 0;">
-      <input type="checkbox" id="ageCheckbox" style="width:20px;height:20px;cursor:pointer;">
-      <label for="ageCheckbox" style="font-size:0.9rem;cursor:pointer;" data-lang="fr">Je suis majeur</label>
-      <label for="ageCheckbox" style="font-size:0.9rem;cursor:pointer;" data-lang="en" style="display:none">I am of legal age</label>
-    </div>
-    <div style="display:flex;gap:1rem;margin-top:2rem;">
-      <button onclick="confirmAge()" id="confirmBtn" disabled style="flex:1;padding:12px;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;background:#c9a84c;color:#171717;font-weight:500;" data-lang="fr">J'accepte</button>
-      <button onclick="confirmAge()" id="confirmBtn2" disabled style="flex:1;padding:12px;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;background:#c9a84c;color:#171717;font-weight:500;display:none;" data-lang="en">I Accept</button>
-    </div>
-  </div>
-</div>
-
 <!-- NAV -->
 <nav id="navbar">
   <a href="#accueil" class="nav-logo">
@@ -333,13 +314,11 @@
     <img src="images/famille-vignes.jpeg" alt="Christophe et son oncle dans les vignes du Domaine de Sainte Anne" />
   </div>
   <div class="hero-overlay"></div>
-  <div style="position:absolute;top:40px;left:50%;transform:translateX(-50%);z-index:10;text-align:center;">
-    <img src="Logo steAnne.png" alt="Logo" style="height:60px;width:60px;border-radius:50%;object-fit:cover;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:8px;"/>
-    <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;font-weight:500;">Domaine de Sainte Anne</div>
-  </div>
   <div class="hero-content">
-    <h1 class="hero-title" data-lang="fr" style="white-space:nowrap;">Une nouvelle <em>génération</em> de vins du sud.</h1>
-    <h1 class="hero-title" data-lang="en" style="display:none;white-space:nowrap;">A new <em>generation</em> of southern wines.</h1>
+    <p class="hero-eyebrow" data-lang="fr">Vigneron Indépendant · Marcorignan · Aude</p>
+    <p class="hero-eyebrow" data-lang="en" style="display:none">Independent Winegrower · Marcorignan · Aude</p>
+    <h1 class="hero-title" data-lang="fr">Une nouvelle <em>génération</em><br>de vins du sud.</h1>
+    <h1 class="hero-title" data-lang="en" style="display:none">A new <em>generation</em><br>of southern wines.</h1>
     <p class="hero-subtitle" data-lang="fr">À 10 minutes de Narbonne, le Domaine de Sainte Anne propose des vins légers et fruités — avec une envie, celle de partager le vin autrement.</p>
     <p class="hero-subtitle" data-lang="en" style="display:none">10 minutes from Narbonne, Domaine de Sainte Anne offers light, fruity wines — with one goal: sharing wine in a new way.</p>
     <div class="hero-stats">
@@ -364,17 +343,17 @@
         <span class="hero-stat-label" data-lang="en" style="display:none">Pays d'Aude</span>
       </div>
     </div>
+    <div class="hero-actions">
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="btn-primary" data-lang="fr">Commander nos vins</a>
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="btn-primary" data-lang="en" style="display:none">Order our wines</a>
+      <a href="#histoire" class="btn-outline" data-lang="fr">Découvrir le domaine</a>
+      <a href="#histoire" class="btn-outline" data-lang="en" style="display:none">Discover the estate</a>
+    </div>
   </div>
   <div class="hero-scroll">
     <div class="hero-scroll-line"></div>
   </div>
 </section>
-
-<!-- BANDEAU VIGNERON -->
-<div style="background:#61394a;color:#fff;padding:1.5rem;text-align:center;">
-  <p style="font-size:0.95rem;letter-spacing:0.1em;font-weight:300;margin:0;" data-lang="fr">VIGNERON INDÉPENDANT · MARCORIGNAN · AUDE</p>
-  <p style="font-size:0.95rem;letter-spacing:0.1em;font-weight:300;margin:0;" data-lang="en" style="display:none">INDEPENDENT WINEGROWER · MARCORIGNAN · AUDE</p>
-</div>
 
 <!-- NOTRE HISTOIRE -->
 <section class="histoire" id="histoire">
@@ -423,23 +402,8 @@
           <span class="cepage-tag">Alicante</span>
         </div>
       </div>
-      <div class="fade-up" style="position:relative;">
+      <div class="fade-up">
         <img src="images/grappes-raisin.jpeg" alt="Grappes de raisin noir" class="vignoble-img" />
-        <div style="position:absolute;bottom:20px;left:20px;right:20px;background:rgba(97,57,74,0.95);color:#fff;padding:1.5rem;text-align:center;backdrop-filter:blur(5px);">
-          <div style="margin-bottom:0.8rem;">
-            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;color:#c9a84c;">15 ha</div>
-            <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.8);margin-top:2px;">Vignes</div>
-          </div>
-          <div style="margin-bottom:0.8rem;">
-            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;color:#c9a84c;">7</div>
-            <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.8);margin-top:2px;">Générations</div>
-          </div>
-          <div>
-            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;color:#c9a84c;">2023</div>
-            <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.8);margin-top:2px;" data-lang="fr">Reprise du domaine</div>
-            <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.8);margin-top:2px;" data-lang="en" style="display:none">Estate takeover</div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -772,28 +736,6 @@
 </div>
 
 <script>
-  // AGE CHECKER
-  const checkbox = document.getElementById('ageCheckbox');
-  const confirmBtn = document.getElementById('confirmBtn');
-  const confirmBtn2 = document.getElementById('confirmBtn2');
-  
-  checkbox.addEventListener('change', () => {
-    confirmBtn.disabled = !checkbox.checked;
-    confirmBtn2.disabled = !checkbox.checked;
-  });
-
-  function confirmAge() {
-    localStorage.setItem('ageVerified', 'true');
-    document.getElementById('ageChecker').style.display = 'none';
-  }
-
-  // CHECK AGE ON LOAD
-  if (localStorage.getItem('ageVerified')) {
-    document.getElementById('ageChecker').style.display = 'none';
-  } else {
-    document.getElementById('ageChecker').style.display = 'flex';
-  }
-
   // NAV SCROLL
   const nav = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
