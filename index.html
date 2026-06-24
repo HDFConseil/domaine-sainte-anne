@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bordeaux: #5B3B49;
+      --bordeaux: #61394a;
       --bordeaux-dark: #3a2530;
       --bordeaux-light: #7a5264;
       --creme: #B4A5AC;
@@ -24,6 +24,21 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; font-size: 16px; }
     body { font-family: 'Jost', sans-serif; background: var(--blanc); color: var(--noir); overflow-x: hidden; }
+
+    /* ===== AGE CHECKER ===== */
+    .age-checker { position: fixed; inset: 0; background: rgba(23,23,23,0.85); display: flex; align-items: center; justify-content: center; z-index: 999; backdrop-filter: blur(4px); }
+    .age-checker.hidden { display: none; }
+    .age-checker-modal { background: var(--blanc); padding: 3.5rem 3rem; text-align: center; max-width: 420px; width: 90%; }
+    .age-checker-logo { height: 80px; width: auto; margin-bottom: 2rem; }
+    .age-checker-modal h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400; color: var(--bordeaux-dark); margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+    .age-checker-modal p { font-size: 0.9rem; font-weight: 300; color: #666; line-height: 1.7; margin-bottom: 2rem; }
+    .age-checker-modal p strong { color: var(--bordeaux); font-weight: 600; }
+    .age-checker-btns { display: flex; flex-direction: column; gap: 0.75rem; }
+    .age-btn-oui { background: var(--bordeaux); color: #fff; border: none; padding: 14px; font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .age-btn-oui:hover { background: var(--bordeaux-dark); }
+    .age-btn-non { background: var(--creme-light); color: #999; border: none; padding: 14px; font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .age-btn-non:hover { background: var(--creme); }
+    .age-checker-note { font-size: 0.75rem; color: #bbb; margin-top: 1.5rem; line-height: 1.6; }
 
     /* ===== NAV ===== */
     nav {
@@ -111,21 +126,28 @@
     .cave-text p { font-size: 1rem; font-weight: 300; line-height: 1.9; color: rgba(255,255,255,0.7); margin-bottom: 1.5rem; }
 
     /* ===== VINS ===== */
-    .vins { background: var(--creme-pale); }
-    .vins-intro { text-align: center; max-width: 600px; margin: 0 auto 3.5rem; }
+    .vins { background: var(--creme-pale); position: relative; }
+    .vins-intro { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
     .vins-intro p { font-size: 0.95rem; font-weight: 300; line-height: 1.85; color: #666; }
-    .vins-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--creme); margin-bottom: 2rem; }
-    .vin-card { background: var(--blanc); overflow: hidden; text-decoration: none; color: inherit; display: block; transition: background 0.3s; }
-    .vin-card:hover { background: #f9f4f6; }
-    .vin-img-wrap { overflow: hidden; }
-    .vin-card-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; transition: transform 0.5s; }
-    .vin-card:hover .vin-card-img { transform: scale(1.04); }
-    .vin-card-body { padding: 1.25rem; }
-    .vin-card-type { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 0.4rem; }
-    .vin-card-name { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 400; color: var(--bordeaux-dark); margin-bottom: 0.4rem; }
-    .vin-card-price { font-size: 0.88rem; font-weight: 500; color: var(--or); margin-bottom: 0.6rem; }
-    .vin-card-desc { font-size: 0.82rem; font-weight: 300; line-height: 1.7; color: #777; }
-    .vins-info { background: var(--bordeaux); color: rgba(255,255,255,0.85); font-size: 0.88rem; font-weight: 300; line-height: 1.85; padding: 1.5rem 2rem; }
+    .vins-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2.5rem; margin-bottom: 4rem; }
+    .vin-card { background: var(--blanc); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s; box-shadow: 0 4px 20px rgba(97,57,74,0.02); }
+    .vin-card:hover { transform: translateY(-6px); box-shadow: 0 20px 38px rgba(97,57,74,0.06); }
+    .vin-card:nth-child(1) { grid-column: span 4; }
+    .vin-card:nth-child(2) { grid-column: span 4; transform: translateY(2rem); }
+    .vin-card:nth-child(3) { grid-column: span 4; }
+    .vin-card:nth-child(4) { grid-column: span 12; flex-direction: row; margin-top: 3rem; }
+    .vin-img-wrap { overflow: hidden; background: #fdfbfc; position: relative; display: flex; align-items: center; justify-content: center; }
+    .vin-card:nth-child(-n+3) .vin-img-wrap { height: 340px; padding: 1.5rem; }
+    .vin-card:nth-child(4) .vin-img-wrap { width: 45%; height: 280px; }
+    .vin-card:nth-child(4) .vin-card-body { width: 55%; padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+    .vin-card-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    .vin-card:hover .vin-card-img { transform: scale(1.03); }
+    .vin-card-body { padding: 2rem 1.5rem; }
+    .vin-card-type { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 0.5rem; font-weight: 500; }
+    .vin-card-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 400; color: var(--bordeaux-dark); margin-bottom: 0.5rem; }
+    .vin-card-price { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; color: var(--or); margin-bottom: 0.75rem; }
+    .vin-card-desc { font-size: 0.88rem; font-weight: 300; line-height: 1.75; color: #666; }
+    .vins-info { background: var(--bordeaux); color: rgba(255,255,255,0.85); font-size: 0.88rem; font-weight: 300; line-height: 1.85; padding: 1.5rem 2rem; clear: both; }
     .vins-info strong { color: #fff; font-weight: 500; }
     .vins-info a { color: var(--or-light); text-decoration: none; }
 
@@ -134,8 +156,8 @@
     .oeno-card { background: var(--blanc); overflow: hidden; }
     .oeno-card-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
     .oeno-card-body { padding: 1.75rem; }
-    .oeno-card-icon { font-size: 1.4rem; margin-bottom: 0.75rem; display: block; }
-    .oeno-card-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 400; margin-bottom: 0.6rem; color: var(--bordeaux-dark); }
+    .oeno-card-icon { font-size: 1.2rem; display: inline; margin-right: 0.5rem; }
+    .oeno-card-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 400; margin-bottom: 0.6rem; color: var(--bordeaux-dark); display: inline; }
     .oeno-card-price { font-size: 0.85rem; font-weight: 500; color: var(--or); margin: 0.4rem 0 0.75rem; }
     .oeno-card p { font-size: 0.88rem; font-weight: 300; line-height: 1.75; color: #666; margin-bottom: 0.5rem; }
 
@@ -235,6 +257,10 @@
     /* RESPONSIVE */
     @media (max-width: 1024px) {
       .vins-grid { grid-template-columns: repeat(2, 1fr); }
+      .vin-row { grid-template-columns: 1fr; min-height: auto; }
+      .vin-row--reverse { direction: ltr; }
+      .vin-row-img { height: 260px; }
+      .vin-row-body { padding: 2rem; }
     }
     @media (max-width: 900px) {
       .nav-links, .nav-cta { display: none; }
@@ -261,6 +287,25 @@
   </style>
 </head>
 <body>
+
+<!-- AGE CHECKER -->
+<div class="age-checker" id="ageChecker">
+  <div class="age-checker-modal">
+    <img src="images/logo sans fond.png" alt="Domaine de Sainte Anne" class="age-checker-logo" />
+    <h2 data-lang="fr">Avez-vous plus de 18 ans ?</h2>
+    <h2 data-lang="en" style="display:none">Are you over 18?</h2>
+    <p data-lang="fr">Ce site est réservé aux personnes majeures.<br>L'abus d'alcool est dangereux pour la santé.</p>
+    <p data-lang="en" style="display:none">This site is reserved for adults.<br>Alcohol abuse is dangerous for health.</p>
+    <div class="age-checker-btns">
+      <button class="age-btn-oui" onclick="confirmAge()" data-lang="fr">Oui, j'ai plus de 18 ans</button>
+      <button class="age-btn-oui" onclick="confirmAge()" data-lang="en" style="display:none">Yes, I am over 18</button>
+      <button class="age-btn-non" onclick="denyAge()" data-lang="fr">Non</button>
+      <button class="age-btn-non" onclick="denyAge()" data-lang="en" style="display:none">No</button>
+    </div>
+    <p class="age-checker-note" data-lang="fr">En entrant sur ce site, vous acceptez nos conditions d'utilisation.</p>
+    <p class="age-checker-note" data-lang="en" style="display:none">By entering this site, you agree to our terms of use.</p>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav id="navbar">
@@ -412,9 +457,9 @@
       <p data-lang="en" style="display:none">Our wines stand out for their low alcohol content — around 11.5% to 12.5% — reflecting our commitment to digestible, balanced wines designed for meals and shared moments.</p>
     </div>
     <div class="vins-grid">
-      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="vin-card fade-up">
+      <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-a-part-egale-blanc-2025" target="_blank" rel="noopener" class="vin-card fade-up">
         <div class="vin-img-wrap">
-          <img src="images/cave-bouteilles.jpeg" alt="Vin blanc À Part Égale" class="vin-card-img" style="object-position:left center;" />
+          <img src="images/cave-bouteilles.jpeg" alt="Vin blanc À Part Égale" class="vin-card-img" />
         </div>
         <div class="vin-card-body">
           <p class="vin-card-type" data-lang="fr">Blanc · IGP Pays d'Aude</p>
@@ -425,9 +470,9 @@
           <p class="vin-card-desc" data-lang="en" style="display:none">Fresh and fruity white, reflecting our Mediterranean terroir. Digestible and balanced.</p>
         </div>
       </a>
-      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="vin-card fade-up">
+      <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rose-2024" target="_blank" rel="noopener" class="vin-card fade-up">
         <div class="vin-img-wrap">
-          <img src="images/apero-vins.jpeg" alt="Rosé Caladoc" class="vin-card-img" style="object-position:left 30%;" />
+          <img src="images/apero-vins.jpeg" alt="Rosé Caladoc" class="vin-card-img" />
         </div>
         <div class="vin-card-body">
           <p class="vin-card-type" data-lang="fr">Rosé · Caladoc</p>
@@ -438,9 +483,9 @@
           <p class="vin-card-desc" data-lang="en" style="display:none">Classic fruity rosé, perfect for summer sharing moments.</p>
         </div>
       </a>
-      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="vin-card fade-up">
+      <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank" rel="noopener" class="vin-card fade-up">
         <div class="vin-img-wrap">
-          <img src="images/apero-vins.jpeg" alt="Faire Light rosé" class="vin-card-img" style="object-position:right 30%;" />
+          <img src="images/apero-vins.jpeg" alt="Faire Light rosé" class="vin-card-img" />
         </div>
         <div class="vin-card-body">
           <p class="vin-card-type" data-lang="fr">Rosé léger · Cinsault</p>
@@ -451,16 +496,16 @@
           <p class="vin-card-desc" data-lang="en" style="display:none">Even lighter, crafted for freshness and lightness. A modern cuvée.</p>
         </div>
       </a>
-      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="vin-card fade-up">
+      <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank" rel="noopener" class="vin-card fade-up">
         <div class="vin-img-wrap">
-          <img src="images/vinification.jpeg" alt="Vins rouges du Domaine" class="vin-card-img" style="object-position:center top;" />
+          <img src="images/vinification.jpeg" alt="Vins rouges du Domaine" class="vin-card-img" />
         </div>
         <div class="vin-card-body">
           <p class="vin-card-type" data-lang="fr">Rouge · Caladoc · Cinsault · Marselan</p>
           <p class="vin-card-type" data-lang="en" style="display:none">Red · Caladoc · Cinsault · Marselan</p>
           <h3 class="vin-card-name">Rouges — 2 cuvées</h3>
           <p class="vin-card-price">À partir de 7,90 €</p>
-          <p class="vin-card-desc" data-lang="fr">Caladoc-Cinsault gouleyant, et Entre Deux plus structuré. Légers, fruités, digestes.</p>
+          <p class="vin-card-desc" data-lang="fr">Caladoc-Cinsault gouleyant, et Entre Deux plus structuré. Légers, fruités, digestes. Deux approches complémentaires de notre terroir.</p>
           <p class="vin-card-desc" data-lang="en" style="display:none">Easy-drinking Caladoc-Cinsault, and the more structured Entre Deux. Light, fruity, digestible.</p>
         </div>
       </a>
@@ -470,8 +515,8 @@
       <strong data-lang="en" style="display:none">Order online:</strong>
       <span data-lang="fr"> cartons de 6 bouteilles, panachage libre. Frais de port offerts dès 100€. </span>
       <span data-lang="en" style="display:none"> cases of 6 bottles, mix freely. Free shipping from €100. </span>
-      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" data-lang="fr">Accéder à la boutique →</a>
-      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" data-lang="en" style="display:none">Visit the shop →</a>
+      <a href="https://domainedesainteanne.sumupstore.com/product/pack-decouverte-12-bouteilles" target="_blank" rel="noopener" data-lang="fr">Accéder à la boutique →</a>
+      <a href="https://domainedesainteanne.sumupstore.com/product/pack-decouverte-12-bouteilles" target="_blank" rel="noopener" data-lang="en" style="display:none">Visit the shop →</a>
     </div>
   </div>
 </section>
@@ -586,29 +631,26 @@
     <div class="avis-grid">
       <div class="avis-card fade-up">
         <div class="avis-card-stars">★★★★★</div>
-        <p class="avis-card-text" data-lang="fr">"Une dégustation vraiment agréable, Christophe est passionné et ca se ressent dans ses vins. Des cuvées légères et vraiment délicieuses. On reviendra !"</p>
-        <p class="avis-card-text" data-lang="en" style="display:none">"A truly enjoyable tasting. Christophe is passionate and it shows in his wines. Light, delicious cuvées. We'll be back!"</p>
-        <p class="avis-card-author">Marie L.</p>
-        <p class="avis-card-source">Google · 2024</p>
+        <p class="avis-card-text">"Nous avons passé un très bon moment dégustation au domaine de Sainte Anne grâce à l'accueil très sympathique mais aussi pour la qualité des vins que nous avons goûtés. A noter, un excellent Rosé !!"</p>
+        <p class="avis-card-author">Marc C.</p>
+        <p class="avis-card-source">Google · Juin 2025</p>
       </div>
       <div class="avis-card fade-up">
         <div class="avis-card-stars">★★★★★</div>
-        <p class="avis-card-text" data-lang="fr">"Visite de cave très intéressante, on comprend bien le travail du vigneron. Les vins sont frais et originaux, loin des rouges trop puissants du Sud. Excellent rapport qualité-prix."</p>
-        <p class="avis-card-text" data-lang="en" style="display:none">"Very interesting cellar tour, you really understand the winemaker's work. The wines are fresh and original, far from the overpowering reds of the South. Excellent value."</p>
-        <p class="avis-card-author">Thomas B.</p>
-        <p class="avis-card-source">Google · 2024</p>
+        <p class="avis-card-text">"Excellent et chaleureux accueil lors de notre dégustation avec Christophe qui nous fait visiter sa cave. Nous reviendrons pour le plaisir de partager un moment de dégustation avec nos amis. Excellent vin rouge et rosé !"</p>
+        <p class="avis-card-author">Isabelle B.</p>
+        <p class="avis-card-source">Google · Octobre 2025</p>
       </div>
       <div class="avis-card fade-up">
         <div class="avis-card-stars">★★★★★</div>
-        <p class="avis-card-text" data-lang="fr">"Super accueil, ambiance chaleureuse et authentique. On a adoré l'apéro dégustation avec la planche de charcuterie. On a rempli le coffre avant de rentrer !"</p>
-        <p class="avis-card-text" data-lang="en" style="display:none">"Wonderful welcome, warm and authentic atmosphere. We loved the tasting aperitif with the charcuterie board. We filled the boot of the car before heading home!"</p>
-        <p class="avis-card-author">Sophie M.</p>
-        <p class="avis-card-source">Google · 2025</p>
+        <p class="avis-card-text">"Les vins du domaine Sainte Anne sont très appréciables. J'ai adoré leur dernier rouge Marselan ainsi que le Cinsault Caladoc qui est très facile à boire."</p>
+        <p class="avis-card-author">Jeremy L.</p>
+        <p class="avis-card-source">Google · Février 2025</p>
       </div>
     </div>
     <div class="avis-cta fade-up">
-      <a href="https://g.page/r/domaine-sainte-anne/review" target="_blank" rel="noopener" data-lang="fr">Laisser un avis Google →</a>
-      <a href="https://g.page/r/domaine-sainte-anne/review" target="_blank" rel="noopener" data-lang="en" style="display:none">Leave a Google review →</a>
+      <a href="https://maps.app.goo.gl/Z4jYHGeSP1oca4rr7" target="_blank" rel="noopener" data-lang="fr">Laisser un avis Google →</a>
+      <a href="https://maps.app.goo.gl/Z4jYHGeSP1oca4rr7" target="_blank" rel="noopener" data-lang="en" style="display:none">Leave a Google review →</a>
     </div>
   </div>
 </section>
@@ -703,6 +745,18 @@
 </div>
 
 <script>
+  // AGE CHECKER
+  function confirmAge() {
+    localStorage.setItem('ageVerified', 'true');
+    document.getElementById('ageChecker').classList.add('hidden');
+  }
+  function denyAge() {
+    window.location.href = 'https://www.google.com';
+  }
+  if (localStorage.getItem('ageVerified')) {
+    document.getElementById('ageChecker').classList.add('hidden');
+  }
+
   // NAV SCROLL
   const nav = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
