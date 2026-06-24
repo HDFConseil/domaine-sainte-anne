@@ -60,7 +60,7 @@
   <a href="index.html" class="nav-logo">
     <img src="images/Logo steAnne.png" alt="Domaine de Sainte Anne" />
   </a>
-  <a href="index.html" class="nav-back">← Retour au site</a>
+  <a href="index.html#actualites" class="nav-back">← Retour au site</a>
 </nav>
 
 <div class="page-header">
@@ -100,6 +100,7 @@
 
     container.innerHTML = data.map(a => `
       <div class="actu-card">
+        ${a.image_url ? `<img src="${a.image_url}" alt="${a.titre}" style="width:100%;max-height:320px;object-fit:cover;margin-bottom:1.5rem;" />` : ''}
         <div class="actu-card-date">${formatDate(a.date)}</div>
         <h2 class="actu-card-titre">${a.titre}</h2>
         ${a.sous_titre ? `<p class="actu-card-sous-titre">${a.sous_titre}</p>` : ''}

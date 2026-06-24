@@ -46,7 +46,10 @@
     .btn-logout:hover { border-color: var(--or); color: var(--or); }
 
     /* MAIN CONTENT */
-    .admin-main { flex: 1; padding: 2.5rem; overflow-y: auto; }
+    .admin-topbar { display: flex; justify-content: flex-end; padding: 1rem 2.5rem; background: #fff; border-bottom: 1px solid #eee; }
+    .btn-retour { text-decoration: none; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--bordeaux); border: 1px solid var(--bordeaux); padding: 8px 18px; transition: all 0.2s; }
+    .btn-retour:hover { background: var(--bordeaux); color: #fff; }
+    .admin-main { flex: 1; overflow-y: auto; }
     .admin-header { margin-bottom: 2rem; }
     .admin-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 400; color: var(--bordeaux); }
     .admin-header p { font-size: 0.85rem; color: #999; margin-top: 4px; }
@@ -119,8 +122,10 @@
   </aside>
 
   <main class="admin-main">
-
-    <!-- NOUVELLE ACTUALITÉ -->
+    <div class="admin-topbar">
+      <a href="actualites.html" target="_blank" class="btn-retour">← Voir la page actualités</a>
+    </div>
+    <div style="padding:2.5rem;">
     <div id="section-nouvelle">
       <div class="admin-header">
         <h2>Nouvelle actualité</h2>
@@ -154,6 +159,11 @@
             <label>Texte du lien</label>
             <input type="text" id="actu-lien-label" placeholder="Ex: En savoir plus" />
           </div>
+        </div>
+        <div class="form-group">
+          <label>Photo (optionnelle)</label>
+          <input type="file" id="actu-image" accept="image/*" style="background:#fff;padding:8px;" />
+          <div id="image-preview" style="margin-top:0.75rem;display:none;"><img id="preview-img" style="max-height:180px;max-width:100%;object-fit:contain;border:1px solid #eee;" /></div>
         </div>
         <button class="btn-submit" id="btn-publier" onclick="publierActualite()">Publier l'actualité</button>
         <p class="success-msg" id="success-msg" style="display:none;">✅ Actualité publiée avec succès!</p>
@@ -218,6 +228,21 @@
   }
 
   // PUBLIER
+  // PREVIEW IMAGE
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('actu-image').addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('preview-img').src = e.target.result;
+          document.getElementById('image-preview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+
   async function publierActualite() {
     const date = document.getElementById('actu-date').value;
     const titre = document.getElementById('actu-titre').value.trim();
@@ -225,6 +250,7 @@
     const texte = document.getElementById('actu-texte').value.trim();
     const lien_url = document.getElementById('actu-lien-url').value.trim();
     const lien_label = document.getElementById('actu-lien-label').value.trim();
+    const imageFile = document.getElementById('actu-image').files[0];
 
     document.getElementById('success-msg').style.display = 'none';
     document.getElementById('error-msg').style.display = 'none';
@@ -239,11 +265,39 @@
     btn.disabled = true;
     btn.textContent = 'Publication...';
 
+    let image_url = null;
+
+    // UPLOAD IMAGE si présente
+    if (imageFile) {
+      btn.textContent = 'Upload image...';
+      const ext = imageFile.name.split('.').pop();
+      const fileName = `${Date.now()}.${ext}`;
+      const { data: uploadData, error: uploadError } = await db.storage
+        .from('actualites-sainte-anne-images')
+        .upload(fileName, imageFile, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) {
+        btn.disabled = false;
+        btn.textContent = "Publier l'actualité";
+        document.getElementById('error-msg').textContent = 'Erreur upload image: ' + uploadError.message;
+        document.getElementById('error-msg').style.display = 'block';
+        return;
+      }
+
+      const { data: urlData } = db.storage
+        .from('actualites-sainte-anne-images')
+        .getPublicUrl(fileName);
+      image_url = urlData.publicUrl;
+    }
+
+    btn.textContent = 'Publication...';
     const { error } = await db.from('actualites_sainte_anne').insert([{
-      date, titre, sous_titre: sous_titre || null,
+      date, titre,
+      sous_titre: sous_titre || null,
       texte: texte || null,
       lien_url: lien_url || null,
-      lien_label: lien_label || null
+      lien_label: lien_label || null,
+      image_url
     }]);
 
     btn.disabled = false;
@@ -260,6 +314,8 @@
       document.getElementById('actu-texte').value = '';
       document.getElementById('actu-lien-url').value = '';
       document.getElementById('actu-lien-label').value = '';
+      document.getElementById('actu-image').value = '';
+      document.getElementById('image-preview').style.display = 'none';
       setTimeout(() => document.getElementById('success-msg').style.display = 'none', 4000);
     }
   }

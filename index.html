@@ -358,7 +358,7 @@
 <!-- HERO -->
 <section class="hero" id="accueil">
   <div class="hero-bg">
-    <img src="images/famille-vignes.jpeg" alt="Famille du Domaine de Sainte Anne" />
+    <img src="images/accueil vigne.jpeg" alt="Famille du Domaine de Sainte Anne" />
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
@@ -534,7 +534,7 @@
       </a>
       <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank" rel="noopener" class="vin-card fade-up">
         <div class="vin-img-wrap">
-          <img src="images/rouge entre deux 2025.png" alt="Rouge Entre Deux 2025" class="vin-card-img" />
+          <img src="images/rouge entre deux 2025.png" alt="Rouge Entre Deux 2025" class="vin-card-img" style="object-position:center 5%;" />
         </div>
         <div class="vin-card-body">
           <p class="vin-card-type" data-lang="fr">Rouge · IGP Pays d'Oc Coteaux de Narbonne</p>
@@ -813,6 +813,7 @@
     const a = data[0];
     container.innerHTML = `
       <div class="actu-card" style="background:#1a1a1a;padding:2rem;border-left:3px solid var(--or);">
+        ${a.image_url ? `<img src="${a.image_url}" alt="${a.titre}" style="width:100%;max-height:260px;object-fit:cover;margin-bottom:1.25rem;" />` : ''}
         <div class="actu-date">${formatDate(a.date)}</div>
         <h3 class="actu-title">${a.titre}</h3>
         ${a.sous_titre ? `<p style="font-size:0.9rem;color:var(--or-light);margin-bottom:0.75rem;font-style:italic;">${a.sous_titre}</p>` : ''}
