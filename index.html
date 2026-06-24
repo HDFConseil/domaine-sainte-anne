@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bordeaux: #61394a;
@@ -646,9 +647,14 @@
       <h2 class="section-title" data-lang="en" style="display:none">Latest <em>news</em><br>from the estate</h2>
       <div class="divider"></div>
     </div>
-    <div class="actu-placeholder fade-up">
-      <p data-lang="fr">✦ Les actualités du domaine arrivent bientôt — événements, vendanges, soirées dégustation… ✦</p>
-      <p data-lang="en" style="display:none">✦ Estate news coming soon — events, harvest updates, tasting evenings… ✦</p>
+    <div id="derniere-actu" class="fade-up">
+      <div class="actu-placeholder fade-up">
+        <p data-lang="fr">Chargement...</p>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:2rem;" class="fade-up">
+      <a href="actualites.html" style="display:inline-block; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--or); text-decoration:none; border-bottom:1px solid var(--or); padding-bottom:2px;" data-lang="fr">Voir toutes les actualités →</a>
+      <a href="actualites.html" style="display:none; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--or); text-decoration:none; border-bottom:1px solid var(--or); padding-bottom:2px;" data-lang="en">See all news →</a>
     </div>
   </div>
 </section>
@@ -781,6 +787,43 @@
   <p data-lang="fr">L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Interdit aux mineurs de moins de 18 ans.</p>
   <p data-lang="en" style="display:none">Alcohol abuse is dangerous for your health. Drink responsibly. Not for sale to persons under 18.</p>
 </div>
+
+<script>
+  // SUPABASE — DERNIÈRE ACTUALITÉ
+  const SUPABASE_URL = 'https://ksifjyshjhjdsiinycci.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_PSKRO1ck4rZaRJ6KxSK9tw_NQjRCcvO';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  async function chargerDerniereActu() {
+    const container = document.getElementById('derniere-actu');
+    const { data, error } = await db.from('actualites_sainte_anne')
+      .select('*').order('date', { ascending: false }).limit(1);
+
+    if (error || !data || data.length === 0) {
+      container.innerHTML = '<div class="actu-placeholder"><p style="color:rgba(255,255,255,0.3);font-size:0.9rem;font-style:italic;">✦ Les actualités du domaine arrivent bientôt — événements, vendanges, soirées dégustation… ✦</p></div>';
+      return;
+    }
+
+    const a = data[0];
+    container.innerHTML = `
+      <div class="actu-card" style="background:#1a1a1a;padding:2rem;border-left:3px solid var(--or);">
+        <div class="actu-date">${formatDate(a.date)}</div>
+        <h3 class="actu-title">${a.titre}</h3>
+        ${a.sous_titre ? `<p style="font-size:0.9rem;color:var(--or-light);margin-bottom:0.75rem;font-style:italic;">${a.sous_titre}</p>` : ''}
+        ${a.texte ? `<p class="actu-text">${a.texte}</p>` : ''}
+        ${a.lien_url ? `<a href="${a.lien_url}" target="_blank" rel="noopener" style="display:inline-block;margin-top:1rem;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--or);text-decoration:none;border-bottom:1px solid var(--or);padding-bottom:2px;">${a.lien_label || 'En savoir plus'} →</a>` : ''}
+      </div>
+    `;
+  }
+
+  chargerDerniereActu();
+</script>
 
 <script>
   // AGE CHECKER

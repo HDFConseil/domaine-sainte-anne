@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Domaine de Sainte Anne</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bordeaux: #61394a;
+      --bordeaux-dark: #3a2530;
+      --or: #c9a84c;
+      --or-light: #e8d5a3;
+      --blanc: #fdfbfc;
+      --creme: #f5f0f2;
+      --noir: #171717;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jost', sans-serif; background: var(--creme); color: var(--noir); min-height: 100vh; }
+
+    /* LOGIN */
+    .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bordeaux); }
+    .login-box { background: #fff; padding: 3rem 2.5rem; max-width: 380px; width: 90%; text-align: center; }
+    .login-box img { height: 70px; margin-bottom: 1.5rem; }
+    .login-box h1 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 400; color: var(--bordeaux); margin-bottom: 0.5rem; }
+    .login-box p { font-size: 0.85rem; color: #999; margin-bottom: 2rem; }
+    .login-box input { width: 100%; padding: 12px; border: 1px solid #ddd; font-family: 'Jost', sans-serif; font-size: 0.9rem; margin-bottom: 1rem; outline: none; }
+    .login-box input:focus { border-color: var(--bordeaux); }
+    .login-box button { width: 100%; padding: 13px; background: var(--bordeaux); color: #fff; border: none; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .login-box button:hover { background: var(--bordeaux-dark); }
+    .login-error { color: #c0392b; font-size: 0.85rem; margin-top: 0.75rem; }
+
+    /* LAYOUT ADMIN */
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar { width: 260px; background: var(--bordeaux); color: #fff; padding: 2rem 0; flex-shrink: 0; }
+    .admin-sidebar-logo { padding: 0 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 1.5rem; }
+    .admin-sidebar-logo img { height: 50px; }
+    .admin-sidebar-logo p { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 8px; }
+    .admin-nav { list-style: none; }
+    .admin-nav li a { display: flex; align-items: center; gap: 10px; padding: 12px 1.5rem; font-size: 0.9rem; color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.2s; cursor: pointer; }
+    .admin-nav li a:hover, .admin-nav li a.active { background: rgba(255,255,255,0.1); color: #fff; border-left: 3px solid var(--or); }
+    .admin-nav li a span.icon { font-size: 1rem; }
+    .admin-sidebar-footer { padding: 1.5rem; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); position: absolute; bottom: 0; width: 260px; }
+    .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); padding: 8px 16px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; width: 100%; transition: all 0.2s; }
+    .btn-logout:hover { border-color: var(--or); color: var(--or); }
+
+    /* MAIN CONTENT */
+    .admin-main { flex: 1; padding: 2.5rem; overflow-y: auto; }
+    .admin-header { margin-bottom: 2rem; }
+    .admin-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 400; color: var(--bordeaux); }
+    .admin-header p { font-size: 0.85rem; color: #999; margin-top: 4px; }
+
+    /* FORM */
+    .form-card { background: #fff; padding: 2rem; max-width: 700px; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 6px; font-weight: 500; }
+    .form-group input, .form-group textarea { width: 100%; padding: 11px 14px; border: 1px solid #e0d8db; font-family: 'Jost', sans-serif; font-size: 0.9rem; outline: none; transition: border 0.2s; background: var(--creme); }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--bordeaux); background: #fff; }
+    .form-group textarea { min-height: 140px; resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn-submit { background: var(--bordeaux); color: #fff; border: none; padding: 13px 32px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-submit:hover { background: var(--bordeaux-dark); }
+    .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+    .success-msg { color: #27ae60; font-size: 0.88rem; margin-top: 1rem; }
+    .error-msg { color: #c0392b; font-size: 0.88rem; margin-top: 1rem; }
+
+    /* LISTE ACTUALITÉS */
+    .actu-list { max-width: 800px; }
+    .actu-item { background: #fff; padding: 1.25rem 1.5rem; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .actu-item-info { flex: 1; }
+    .actu-item-date { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--or); margin-bottom: 4px; }
+    .actu-item-titre { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--bordeaux-dark); }
+    .actu-item-sous-titre { font-size: 0.82rem; color: #999; margin-top: 2px; }
+    .btn-delete { background: none; border: 1px solid #eee; color: #ccc; padding: 7px 14px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+    .btn-delete:hover { border-color: #c0392b; color: #c0392b; }
+    .empty-state { text-align: center; padding: 3rem; color: #bbb; font-style: italic; font-size: 0.9rem; }
+    .loading { text-align: center; padding: 2rem; color: #999; font-size: 0.9rem; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .admin-layout { flex-direction: column; }
+      .admin-sidebar { width: 100%; padding: 1rem 0; position: relative; }
+      .admin-sidebar-footer { position: relative; width: 100%; }
+      .admin-nav li a { padding: 10px 1rem; }
+      .admin-main { padding: 1.5rem; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <img src="images/Logo steAnne.png" alt="Logo" />
+    <h1>Administration</h1>
+    <p>Domaine de Sainte Anne</p>
+    <input type="password" id="passwordInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') login()" />
+    <button onclick="login()">Se connecter</button>
+    <p class="login-error" id="loginError"></p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-layout" id="adminLayout" style="display:none;">
+  <aside class="admin-sidebar" style="position:relative;">
+    <div class="admin-sidebar-logo">
+      <img src="images/Logo steAnne.png" alt="Logo" />
+      <p>Administration</p>
+    </div>
+    <ul class="admin-nav">
+      <li><a onclick="showSection('nouvelle')" id="nav-nouvelle" class="active"><span class="icon">✍️</span> Nouvelle actualité</a></li>
+      <li><a onclick="showSection('liste')" id="nav-liste"><span class="icon">📋</span> Voir les actualités</a></li>
+    </ul>
+    <div class="admin-sidebar-footer">
+      <button class="btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- NOUVELLE ACTUALITÉ -->
+    <div id="section-nouvelle">
+      <div class="admin-header">
+        <h2>Nouvelle actualité</h2>
+        <p>Créez une nouvelle actualité pour le site du domaine.</p>
+      </div>
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date *</label>
+            <input type="date" id="actu-date" />
+          </div>
+          <div class="form-group">
+            <label>Titre *</label>
+            <input type="text" id="actu-titre" placeholder="Ex: Vendanges 2025 — À venir !" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Sous-titre</label>
+          <input type="text" id="actu-sous-titre" placeholder="Ex: Cette année s'annonce exceptionnelle..." />
+        </div>
+        <div class="form-group">
+          <label>Texte</label>
+          <textarea id="actu-texte" placeholder="Contenu de l'actualité..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Lien URL</label>
+            <input type="url" id="actu-lien-url" placeholder="https://..." />
+          </div>
+          <div class="form-group">
+            <label>Texte du lien</label>
+            <input type="text" id="actu-lien-label" placeholder="Ex: En savoir plus" />
+          </div>
+        </div>
+        <button class="btn-submit" id="btn-publier" onclick="publierActualite()">Publier l'actualité</button>
+        <p class="success-msg" id="success-msg" style="display:none;">✅ Actualité publiée avec succès!</p>
+        <p class="error-msg" id="error-msg" style="display:none;"></p>
+      </div>
+    </div>
+
+    <!-- LISTE ACTUALITÉS -->
+    <div id="section-liste" style="display:none;">
+      <div class="admin-header">
+        <h2>Actualités publiées</h2>
+        <p>Gérez les actualités existantes du domaine.</p>
+      </div>
+      <div class="actu-list" id="actu-list">
+        <div class="loading">Chargement...</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ====== CONFIGURATION SUPABASE ======
+  const SUPABASE_URL = 'https://ksifjyshjhjdsiinycci.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_PSKRO1ck4rZaRJ6KxSK9tw_NQjRCcvO';
+  const MOT_DE_PASSE_ADMIN = 'sainteanne2025'; // Change ce mot de passe!
+  // ====================================
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // LOGIN
+  function login() {
+    const pwd = document.getElementById('passwordInput').value;
+    if (pwd === MOT_DE_PASSE_ADMIN) {
+      sessionStorage.setItem('admin_auth', 'true');
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminLayout').style.display = 'flex';
+    } else {
+      document.getElementById('loginError').textContent = 'Mot de passe incorrect.';
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem('admin_auth');
+    location.reload();
+  }
+
+  // Check si déjà connecté
+  if (sessionStorage.getItem('admin_auth') === 'true') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminLayout').style.display = 'flex';
+  }
+
+  // NAVIGATION
+  function showSection(section) {
+    document.getElementById('section-nouvelle').style.display = section === 'nouvelle' ? 'block' : 'none';
+    document.getElementById('section-liste').style.display = section === 'liste' ? 'block' : 'none';
+    document.getElementById('nav-nouvelle').classList.toggle('active', section === 'nouvelle');
+    document.getElementById('nav-liste').classList.toggle('active', section === 'liste');
+    if (section === 'liste') chargerActualites();
+  }
+
+  // PUBLIER
+  async function publierActualite() {
+    const date = document.getElementById('actu-date').value;
+    const titre = document.getElementById('actu-titre').value.trim();
+    const sous_titre = document.getElementById('actu-sous-titre').value.trim();
+    const texte = document.getElementById('actu-texte').value.trim();
+    const lien_url = document.getElementById('actu-lien-url').value.trim();
+    const lien_label = document.getElementById('actu-lien-label').value.trim();
+
+    document.getElementById('success-msg').style.display = 'none';
+    document.getElementById('error-msg').style.display = 'none';
+
+    if (!date || !titre) {
+      document.getElementById('error-msg').textContent = 'La date et le titre sont obligatoires.';
+      document.getElementById('error-msg').style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btn-publier');
+    btn.disabled = true;
+    btn.textContent = 'Publication...';
+
+    const { error } = await db.from('actualites_sainte_anne').insert([{
+      date, titre, sous_titre: sous_titre || null,
+      texte: texte || null,
+      lien_url: lien_url || null,
+      lien_label: lien_label || null
+    }]);
+
+    btn.disabled = false;
+    btn.textContent = "Publier l'actualité";
+
+    if (error) {
+      document.getElementById('error-msg').textContent = 'Erreur: ' + error.message;
+      document.getElementById('error-msg').style.display = 'block';
+    } else {
+      document.getElementById('success-msg').style.display = 'block';
+      document.getElementById('actu-date').value = '';
+      document.getElementById('actu-titre').value = '';
+      document.getElementById('actu-sous-titre').value = '';
+      document.getElementById('actu-texte').value = '';
+      document.getElementById('actu-lien-url').value = '';
+      document.getElementById('actu-lien-label').value = '';
+      setTimeout(() => document.getElementById('success-msg').style.display = 'none', 4000);
+    }
+  }
+
+  // CHARGER LA LISTE
+  async function chargerActualites() {
+    const list = document.getElementById('actu-list');
+    list.innerHTML = '<div class="loading">Chargement...</div>';
+
+    const { data, error } = await db.from('actualites_sainte_anne')
+      .select('*').order('date', { ascending: false });
+
+    if (error) { list.innerHTML = '<div class="empty-state">Erreur de chargement.</div>'; return; }
+    if (!data || data.length === 0) { list.innerHTML = '<div class="empty-state">Aucune actualité publiée pour l\'instant.</div>'; return; }
+
+    list.innerHTML = data.map(a => `
+      <div class="actu-item" id="actu-${a.id}">
+        <div class="actu-item-info">
+          <div class="actu-item-date">${formatDate(a.date)}</div>
+          <div class="actu-item-titre">${a.titre}</div>
+          ${a.sous_titre ? `<div class="actu-item-sous-titre">${a.sous_titre}</div>` : ''}
+        </div>
+        <button class="btn-delete" onclick="supprimerActualite('${a.id}')">Supprimer</button>
+      </div>
+    `).join('');
+  }
+
+  // SUPPRIMER
+  async function supprimerActualite(id) {
+    if (!confirm('Supprimer cette actualité ?')) return;
+    const { error } = await db.from('actualites_sainte_anne').delete().eq('id', id);
+    if (!error) document.getElementById('actu-' + id).remove();
+  }
+
+  // FORMAT DATE
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+</script>
+</body>
+</html>
