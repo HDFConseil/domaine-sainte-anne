@@ -177,12 +177,12 @@
 
 <script>
   // ====== CONFIGURATION SUPABASE ======
-  const SUPABASE_URL = 'https://ksifjyshjhjdsiinycci.supabase.com';
+  const SUPABASE_URL = 'https://ksifjyshjhjdsiinycci.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzaWZqeXNoamhqZHNpaW55Y2NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0Mjc5NTQsImV4cCI6MjA5NTAwMzk1NH0.pLXvzDImEOiTawDbEFv9_cXOgy_rTlcl6jJEf7P4kXc';
   const MOT_DE_PASSE_ADMIN = 'sainteanne2025'; // Change ce mot de passe!
   // ====================================
 
-  const { createClient } = supabase;
+  const { createClient } = window.supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   // LOGIN
