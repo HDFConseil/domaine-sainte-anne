@@ -60,7 +60,7 @@
     .nav-links a:hover { color: var(--or); }
     .nav-right { display: flex; align-items: center; gap: 1rem; grid-column: 3; }
     .lang-switcher { display: flex; gap: 4px; }
-    .lang-btn { background: none; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.6); font-size: 10px; font-family: 'Jost', sans-serif; letter-spacing: 0.15em; padding: 5px 10px; cursor: pointer; transition: all 0.2s; }
+    .lang-btn { display: inline-block; text-decoration: none; background: none; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.6); font-size: 10px; font-family: 'Jost', sans-serif; letter-spacing: 0.15em; padding: 5px 10px; cursor: pointer; transition: all 0.2s; }
     .lang-btn.active, .lang-btn:hover { border-color: var(--or); color: var(--or); }
     .nav-cta { text-decoration: none; font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--noir); background: var(--or); padding: 10px 22px; transition: background 0.2s; border-radius: 999px; }
     .nav-cta:hover { background: var(--or-light); }
@@ -373,8 +373,8 @@
   </ul>
   <div class="nav-right">
     <div class="lang-switcher">
-      <button class="lang-btn" onclick="setLang('fr')">FR</button>
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <a href="../" class="lang-btn">FR</a>
+      <a href="./" class="lang-btn active">EN</a>
     </div>
     <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="nav-cta" data-lang="fr">Commander</a>
     <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="nav-cta" data-lang="en" style="display:none">Order</a>
@@ -399,8 +399,8 @@
   <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" style="color:var(--or);" data-lang="fr">Commander →</a>
   <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" style="color:var(--or);display:none;" data-lang="en">Order →</a>
   <div class="mobile-menu-lang">
-    <button class="lang-btn" onclick="setLang('fr');toggleMenu()">FR</button>
-    <button class="lang-btn active" onclick="setLang('en');toggleMenu()">EN</button>
+    <a href="../" class="lang-btn">FR</a>
+    <a href="./" class="lang-btn active">EN</a>
   </div>
 </div>
 
@@ -1156,14 +1156,6 @@
     document.getElementById('mobileMenu').classList.toggle('open');
   }
 
-  // FADE UP
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
   // LANGUE
   let currentLang = 'fr';
   function setLang(lang) {
@@ -1179,8 +1171,16 @@
       btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
     });
   }
-  // Version anglaise par défaut sur cette page
+  // Version anglaise par défaut sur cette page (exécuté avant le fade-up pour que le texte soit bien détecté visible)
   setLang('en');
+
+  // FADE UP
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
