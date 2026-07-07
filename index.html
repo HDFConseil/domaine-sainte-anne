@@ -135,20 +135,20 @@
     .vins-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2.5rem; margin-bottom: 4rem; }
     .vin-card { background: var(--blanc); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s; box-shadow: 0 4px 20px rgba(97,57,74,0.02); }
     .vin-card:hover { transform: translateY(-6px); box-shadow: 0 20px 38px rgba(97,57,74,0.06); }
-    .vin-card:nth-child(1) { grid-column: span 4; }
-    .vin-card:nth-child(2) { grid-column: span 4; transform: translateY(2rem); }
-    .vin-card:nth-child(3) { grid-column: span 4; }
-    .vin-card:nth-child(4) { grid-column: span 12; flex-direction: row; margin-top: 3rem; }
+    .vin-card:not(.vin-card--wide) { grid-column: span 4; }
+    .vin-card:nth-child(2):not(.vin-card--wide) { transform: translateY(2rem); }
+    .vin-card--wide { grid-column: span 12; flex-direction: row; margin-top: 3rem; }
     .vin-img-wrap { overflow: hidden; background: #fdfbfc; position: relative; display: flex; align-items: center; justify-content: center; }
-    .vin-card:nth-child(-n+3) .vin-img-wrap { height: 340px; padding: 1.5rem; }
-    .vin-card:nth-child(4) .vin-img-wrap { width: 45%; height: 280px; }
-    .vin-card:nth-child(4) .vin-card-body { width: 55%; padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+    .vin-card:not(.vin-card--wide) .vin-img-wrap { height: 340px; padding: 1.5rem; }
+    .vin-card--wide .vin-img-wrap { width: 45%; height: 280px; }
+    .vin-card--wide .vin-card-body { width: 55%; padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
     .vin-card-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
     .vin-card:hover .vin-card-img { transform: scale(1.03); }
     .vin-card-body { padding: 2rem 1.5rem; }
     .vin-card-type { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 0.5rem; font-weight: 500; }
     .vin-card-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 400; color: var(--bordeaux-dark); margin-bottom: 0.5rem; }
     .vin-card-price { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; color: var(--or); margin-bottom: 0.75rem; }
+    .vin-card-meta { font-size: 0.82rem; font-weight: 300; color: #888; margin-bottom: 0.75rem; line-height: 1.6; }
     .vin-card-desc { font-size: 0.88rem; font-weight: 300; line-height: 1.75; color: #666; }
     .vins-info { background: var(--bordeaux); color: rgba(255,255,255,0.85); font-size: 0.88rem; font-weight: 300; line-height: 1.85; padding: 1.5rem 2rem; clear: both; }
     .vins-info strong { color: #fff; font-weight: 500; }
@@ -516,7 +516,7 @@
         <h2 class="section-title fade-up" data-lang="en" style="display:none">Preserving a<br><em>historic</em> know-how</h2>
         <div class="divider fade-up"></div>
         <div class="cave-text">
-          <p class="fade-up" data-lang="fr">Le Domaine est installé en cœur du village, dans une cave viticole traditionnelle. Les cuves en béton d'origine sont toujours utilisées, dans la continuité d'un savoir-faire lié au patrimoine viticole du Narbonnais.</p>
+          <p class="fade-up" data-lang="fr">Le Domaine est installé au cœur du village, dans une cave viticole traditionnelle. Les cuves en béton d'origine sont toujours utilisées, dans la continuité d'un savoir-faire lié au patrimoine viticole du Narbonnais.</p>
           <p class="fade-up" data-lang="en" style="display:none">The estate is set in the heart of the village, in a traditional wine cellar. The original concrete tanks are still in use, continuing a winemaking heritage deeply tied to the Narbonne region.</p>
           <p class="fade-up" data-lang="fr">En tant que vigneron indépendant, Christophe assure directement chaque étape : travail de la vigne, vinification, élevage et mise en bouteille au Domaine.</p>
           <p class="fade-up" data-lang="en" style="display:none">As an independent winegrower, Christophe handles every step directly: vineyard work, vinification, aging and bottling on the estate.</p>
@@ -551,8 +551,25 @@
           <p class="vin-card-type" data-lang="en" style="display:none">White · IGP Pays d'Aude</p>
           <h3 class="vin-card-name">À Part Égale 2025</h3>
           <p class="vin-card-price">8,50 €</p>
-          <p class="vin-card-desc" data-lang="fr">Blanc frais et fruité, reflet de nos terroirs méditerranéens. Digeste et équilibré.</p>
-          <p class="vin-card-desc" data-lang="en" style="display:none">Fresh and fruity white, reflecting our Mediterranean terroir. Digestible and balanced.</p>
+          <p class="vin-card-meta" data-lang="fr">100% Chardonnay · 10,5% vol</p>
+          <p class="vin-card-meta" data-lang="en" style="display:none">100% Chardonnay · 10.5% vol</p>
+          <p class="vin-card-desc" data-lang="fr">Un blanc frais et désaltérant, tout en légèreté, porté par le fruit et la vivacité.<br><br>À déguster avec : parfait à l'apéritif, ou en accompagnement de salades estivales, grillades légères, cuisine méditerranéenne, taboulé ou tartes salées. À servir bien frais, autour de 8°C.</p>
+          <p class="vin-card-desc" data-lang="en" style="display:none">A fresh, thirst-quenching white, light and fruit-driven with lively freshness.<br><br>Pairs well with: perfect as an aperitif, or with summer salads, light grilled dishes, Mediterranean cuisine, tabbouleh or savoury tarts. Serve chilled, around 8°C.</p>
+        </div>
+      </a>
+      <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank" rel="noopener" class="vin-card fade-up">
+        <div class="vin-img-wrap">
+          <img src="images/bouteille-fair-light-2025.png" alt="Faire Light rosé" class="vin-card-img" />
+        </div>
+        <div class="vin-card-body">
+          <p class="vin-card-type" data-lang="fr">Rosé · IGP Pays d'Aude</p>
+          <p class="vin-card-type" data-lang="en" style="display:none">Rosé · IGP Pays d'Aude</p>
+          <h3 class="vin-card-name">Faire Light 2025</h3>
+          <p class="vin-card-price">7,20 €</p>
+          <p class="vin-card-meta" data-lang="fr">80% Caladoc, 20% Cinsault · 11% vol</p>
+          <p class="vin-card-meta" data-lang="en" style="display:none">80% Caladoc, 20% Cinsault · 11% vol</p>
+          <p class="vin-card-desc" data-lang="fr">Un rosé léger et expressif, porté par le fruit, avec une belle vivacité. Un vin frais, équilibré, qui allie gourmandise et tension.<br><br>À déguster avec : idéal en accompagnement de plats méditerranéens, grillades de poisson, cuisine asiatique légèrement relevée, ou encore d'un tian de légumes. Servir entre 10 et 12°C.</p>
+          <p class="vin-card-desc" data-lang="en" style="display:none">A light, expressive rosé, fruit-forward with lovely freshness. A balanced wine that combines juiciness and tension.<br><br>Pairs well with: Mediterranean dishes, grilled fish, lightly spiced Asian cuisine, or a vegetable tian. Serve between 10 and 12°C.</p>
         </div>
       </a>
       <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank" rel="noopener" class="vin-card fade-up">
@@ -562,36 +579,42 @@
         <div class="vin-card-body">
           <p class="vin-card-type" data-lang="fr">Rouge · IGP Pays d'Aude</p>
           <p class="vin-card-type" data-lang="en" style="display:none">Red · IGP Pays d'Aude</p>
-          <h3 class="vin-card-name">Caladoc Cinsault 2024</h3>
+          <h3 class="vin-card-name">Cinsault Caladoc 2024</h3>
           <p class="vin-card-price">7,90 €</p>
-          <p class="vin-card-desc" data-lang="fr">Caladoc · Cinsault — 11,5% vol.<br><br>Un rouge léger et fruité, aux notes de groseille et de framboise. Très accessible, avec une jolie vivacité, c'est un vin de soif, fait pour les instants simples et les grandes tablées.<br><br>À déguster avec : grillades, planches de charcuterie, légumes rôtis ou cuisine méditerranéenne.</p>
-          <p class="vin-card-desc" data-lang="en" style="display:none">Caladoc · Cinsault — 11.5% vol.<br><br>A light, fruity red with notes of redcurrant and raspberry. Very approachable, with lovely freshness — a thirst-quenching wine for simple moments and large gatherings.<br><br>Pairs well with: grilled meats, charcuterie boards, roasted vegetables or Mediterranean cuisine.</p>
+          <p class="vin-card-meta" data-lang="fr">60% Cinsault, 40% Caladoc · 11,5% vol</p>
+          <p class="vin-card-meta" data-lang="en" style="display:none">60% Cinsault, 40% Caladoc · 11.5% vol</p>
+          <p class="vin-card-desc" data-lang="fr">Un rouge léger et fruité, aux notes de groseille et de framboise. Très accessible, avec une jolie vivacité, c'est un vin de soif, fait pour les instants simples et les grandes tablées.<br><br>À déguster avec : grillades, planches de charcuterie, légumes rôtis ou cuisine méditerranéenne.</p>
+          <p class="vin-card-desc" data-lang="en" style="display:none">A light, fruity red with notes of redcurrant and raspberry. Very approachable, with lovely freshness — a thirst-quenching wine for simple moments and large gatherings.<br><br>Pairs well with: grilled meats, charcuterie boards, roasted vegetables or Mediterranean cuisine.</p>
         </div>
       </a>
-      <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank" rel="noopener" class="vin-card fade-up">
+      <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank" rel="noopener" class="vin-card vin-card--wide fade-up">
         <div class="vin-img-wrap">
-          <img src="images/bouteille-fair-light-2025.png" alt="Faire Light rosé" class="vin-card-img" />
-        </div>
-        <div class="vin-card-body">
-          <p class="vin-card-type" data-lang="fr">Rosé léger · Cinsault</p>
-          <p class="vin-card-type" data-lang="en" style="display:none">Light rosé · Cinsault</p>
-          <h3 class="vin-card-name">Faire Light 2025</h3>
-          <p class="vin-card-price">7,20 €</p>
-          <p class="vin-card-desc" data-lang="fr">Plus léger encore, pensé pour la légèreté et la fraîcheur. Une cuvée moderne.</p>
-          <p class="vin-card-desc" data-lang="en" style="display:none">Even lighter, crafted for freshness and lightness. A modern cuvée.</p>
-        </div>
-      </a>
-      <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank" rel="noopener" class="vin-card fade-up">
-        <div class="vin-img-wrap">
-          <img src="images/rouge-entre-deux-2025.png" alt="Rouge Entre Deux 2025" class="vin-card-img" style="object-position:center 5%;" />
+          <img src="images/rouge-entre-deux-2025.png" alt="Rouge Entre Deux 2025" class="vin-card-img" style="object-position:center 70%;" />
         </div>
         <div class="vin-card-body">
           <p class="vin-card-type" data-lang="fr">Rouge · IGP Pays d'Oc Coteaux de Narbonne</p>
           <p class="vin-card-type" data-lang="en" style="display:none">Red · IGP Pays d'Oc Coteaux de Narbonne</p>
           <h3 class="vin-card-name">Entre Deux 2025</h3>
           <p class="vin-card-price">9,90 €</p>
-          <p class="vin-card-desc" data-lang="fr">80% Marselan, 10% Cinsault, 10% Caladoc — 13,5% vol.<br><br>Un rouge plus structuré mais toujours élégant, aux arômes de fruits noirs, de réglisse et d'épices douces. Il offre de la matière sans lourdeur, et une belle présence en bouche.<br><br>À déguster avec : viandes grillées, tajines, plats épicés ou fromages affinés.</p>
-          <p class="vin-card-desc" data-lang="en" style="display:none">80% Marselan, 10% Cinsault, 10% Caladoc — 13.5% vol.<br><br>A more structured yet elegant red, with aromas of dark fruits, liquorice and gentle spices. Full-bodied without heaviness, with a beautiful lingering finish.<br><br>Pairs well with: grilled meats, tagines, spiced dishes or aged cheeses.</p>
+          <p class="vin-card-meta" data-lang="fr">80% Marselan, 10% Cinsault, 10% Caladoc · 13,5% vol</p>
+          <p class="vin-card-meta" data-lang="en" style="display:none">80% Marselan, 10% Cinsault, 10% Caladoc · 13.5% vol</p>
+          <p class="vin-card-desc" data-lang="fr">Un rouge structuré mais toujours élégant, aux arômes de fruits noirs, de réglisse et d'épices douces. Il offre de la matière sans lourdeur, et une belle présence en bouche.<br><br>À déguster avec : viandes grillées, tajines, plats épicés ou fromages affinés.</p>
+          <p class="vin-card-desc" data-lang="en" style="display:none">A structured yet elegant red, with aromas of dark fruits, liquorice and gentle spices. Full-bodied without heaviness, with a beautiful lingering finish.<br><br>Pairs well with: grilled meats, tagines, spiced dishes or aged cheeses.</p>
+        </div>
+      </a>
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" class="vin-card vin-card--wide fade-up">
+        <div class="vin-img-wrap">
+          <img src="images/domaine-sainte-anne---40-2.jpg" alt="Magnum Entre Deux 2025" class="vin-card-img" />
+        </div>
+        <div class="vin-card-body">
+          <p class="vin-card-type" data-lang="fr">Magnum Rouge · IGP Pays d'Oc Coteaux de Narbonne</p>
+          <p class="vin-card-type" data-lang="en" style="display:none">Magnum Red · IGP Pays d'Oc Coteaux de Narbonne</p>
+          <h3 class="vin-card-name">Entre Deux 2025</h3>
+          <p class="vin-card-price">21,00 €</p>
+          <p class="vin-card-meta" data-lang="fr">80% Marselan, 10% Cinsault, 10% Caladoc · 13,5% vol</p>
+          <p class="vin-card-meta" data-lang="en" style="display:none">80% Marselan, 10% Cinsault, 10% Caladoc · 13.5% vol</p>
+          <p class="vin-card-desc" data-lang="fr">Un rouge structuré mais toujours élégant, aux arômes de fruits noirs, de réglisse et d'épices douces. Il offre de la matière sans lourdeur, et une belle présence en bouche.<br><br>À déguster avec : viandes grillées, tajines, plats épicés ou fromages affinés.</p>
+          <p class="vin-card-desc" data-lang="en" style="display:none">A structured yet elegant red, with aromas of dark fruits, liquorice and gentle spices. Full-bodied without heaviness, with a beautiful lingering finish.<br><br>Pairs well with: grilled meats, tagines, spiced dishes or aged cheeses.</p>
         </div>
       </a>
     </div>
@@ -602,7 +625,7 @@
       <div class="carousel-wrapper">
         <div class="carousel-track" id="carouselTrack">
 
-          <!-- SLIDE 1 -->
+          <!-- SLIDE 1 : BLANC -->
           <div class="carousel-slide">
             <div class="flip-container">
               <div class="flip-card" id="flip-0">
@@ -623,8 +646,8 @@
                   <p class="flip-back-type" data-lang="en" style="display:none">White · IGP Pays d'Aude</p>
                   <h3 class="flip-back-name">À Part Égale 2025</h3>
                   <p class="flip-back-price">8,50 €</p>
-                  <p class="flip-back-desc" data-lang="fr">Blanc frais et fruité, reflet de nos terroirs méditerranéens. Digeste et équilibré.</p>
-                  <p class="flip-back-desc" data-lang="en" style="display:none">Fresh and fruity white, reflecting our Mediterranean terroir. Digestible and balanced.</p>
+                  <p class="flip-back-desc" data-lang="fr">100% Chardonnay · 10,5% vol.<br><br>Un blanc frais et désaltérant, tout en légèreté, porté par le fruit et la vivacité. À déguster avec : apéritif, salades estivales, grillades légères, cuisine méditerranéenne. Servir autour de 8°C.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">100% Chardonnay · 10.5% vol. A fresh, light and fruit-driven white. Pairs with aperitifs, summer salads, light grilled dishes, Mediterranean cuisine. Serve around 8°C.</p>
                   <div class="flip-back-actions">
                     <button class="flip-back-retour" onclick="flipCard(0)" data-lang="fr">← Retour</button>
                     <button class="flip-back-retour" onclick="flipCard(0)" data-lang="en" style="display:none">← Back</button>
@@ -636,66 +659,32 @@
             </div>
           </div>
 
-          <!-- SLIDE 2 -->
+          <!-- SLIDE 2 : ROSÉ -->
           <div class="carousel-slide">
             <div class="flip-container">
               <div class="flip-card" id="flip-1">
                 <div class="flip-front">
-                  <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank">
-                    <img src="images/bouteille-rouge-cinsault-2024.png" alt="Caladoc Cinsault" class="flip-front-img" style="object-position:center center;" />
-                  </a>
-                  <div class="flip-front-body" onclick="flipCard(1)">
-                    <p class="flip-front-type" data-lang="fr">Rouge · IGP Pays d'Aude</p>
-                    <p class="flip-front-type" data-lang="en" style="display:none">Red · IGP Pays d'Aude</p>
-                    <h3 class="flip-front-name">Caladoc Cinsault 2024</h3>
-                    <p class="flip-front-price">7,90 €</p>
-                    <button class="flip-front-more">+ d'infos</button>
-                  </div>
-                </div>
-                <div class="flip-back">
-                  <p class="flip-back-type" data-lang="fr">Rouge · IGP Pays d'Aude</p>
-                  <p class="flip-back-type" data-lang="en" style="display:none">Red · IGP Pays d'Aude</p>
-                  <h3 class="flip-back-name">Caladoc Cinsault 2024</h3>
-                  <p class="flip-back-price">7,90 €</p>
-                  <p class="flip-back-desc" data-lang="fr">Caladoc · Cinsault — 11,5% vol. Un rouge léger et fruité, aux notes de groseille et de framboise. Très accessible, avec une jolie vivacité. À déguster avec : grillades, planches de charcuterie, légumes rôtis.</p>
-                  <p class="flip-back-desc" data-lang="en" style="display:none">Caladoc · Cinsault — 11.5% vol. A light, fruity red with notes of redcurrant and raspberry. Pairs well with grilled meats, charcuterie boards, roasted vegetables.</p>
-                  <div class="flip-back-actions">
-                    <button class="flip-back-retour" onclick="flipCard(1)" data-lang="fr">← Retour</button>
-                    <button class="flip-back-retour" onclick="flipCard(1)" data-lang="en" style="display:none">← Back</button>
-                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
-                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SLIDE 3 -->
-          <div class="carousel-slide">
-            <div class="flip-container">
-              <div class="flip-card" id="flip-2">
-                <div class="flip-front">
                   <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank">
                     <img src="images/bouteille-fair-light-2025.png" alt="Faire Light" class="flip-front-img" />
                   </a>
-                  <div class="flip-front-body" onclick="flipCard(2)">
-                    <p class="flip-front-type" data-lang="fr">Rosé léger · Cinsault</p>
-                    <p class="flip-front-type" data-lang="en" style="display:none">Light rosé · Cinsault</p>
+                  <div class="flip-front-body" onclick="flipCard(1)">
+                    <p class="flip-front-type" data-lang="fr">Rosé · IGP Pays d'Aude</p>
+                    <p class="flip-front-type" data-lang="en" style="display:none">Rosé · IGP Pays d'Aude</p>
                     <h3 class="flip-front-name">Faire Light 2025</h3>
                     <p class="flip-front-price">7,20 €</p>
                     <button class="flip-front-more">+ d'infos</button>
                   </div>
                 </div>
                 <div class="flip-back">
-                  <p class="flip-back-type" data-lang="fr">Rosé léger · Cinsault</p>
-                  <p class="flip-back-type" data-lang="en" style="display:none">Light rosé · Cinsault</p>
+                  <p class="flip-back-type" data-lang="fr">Rosé · IGP Pays d'Aude</p>
+                  <p class="flip-back-type" data-lang="en" style="display:none">Rosé · IGP Pays d'Aude</p>
                   <h3 class="flip-back-name">Faire Light 2025</h3>
                   <p class="flip-back-price">7,20 €</p>
-                  <p class="flip-back-desc" data-lang="fr">Plus léger encore, pensé pour la légèreté et la fraîcheur. Une cuvée moderne, idéale pour l'été.</p>
-                  <p class="flip-back-desc" data-lang="en" style="display:none">Even lighter, crafted for freshness and lightness. A modern cuvée, ideal for summer.</p>
+                  <p class="flip-back-desc" data-lang="fr">80% Caladoc, 20% Cinsault · 11% vol.<br><br>Un rosé léger et expressif, porté par le fruit, avec une belle vivacité. À déguster avec : plats méditerranéens, grillades de poisson, cuisine asiatique légère. Servir entre 10 et 12°C.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">80% Caladoc, 20% Cinsault · 11% vol. A light, expressive rosé, fruit-forward with lovely freshness. Pairs with Mediterranean dishes, grilled fish, light Asian cuisine. Serve between 10-12°C.</p>
                   <div class="flip-back-actions">
-                    <button class="flip-back-retour" onclick="flipCard(2)" data-lang="fr">← Retour</button>
-                    <button class="flip-back-retour" onclick="flipCard(2)" data-lang="en" style="display:none">← Back</button>
+                    <button class="flip-back-retour" onclick="flipCard(1)" data-lang="fr">← Retour</button>
+                    <button class="flip-back-retour" onclick="flipCard(1)" data-lang="en" style="display:none">← Back</button>
                     <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
                     <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
                   </div>
@@ -704,13 +693,47 @@
             </div>
           </div>
 
-          <!-- SLIDE 4 -->
+          <!-- SLIDE 3 : CINSAULT CALADOC -->
+          <div class="carousel-slide">
+            <div class="flip-container">
+              <div class="flip-card" id="flip-2">
+                <div class="flip-front">
+                  <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank">
+                    <img src="images/bouteille-rouge-cinsault-2024.png" alt="Caladoc Cinsault" class="flip-front-img" style="object-position:center center;" />
+                  </a>
+                  <div class="flip-front-body" onclick="flipCard(2)">
+                    <p class="flip-front-type" data-lang="fr">Rouge · IGP Pays d'Aude</p>
+                    <p class="flip-front-type" data-lang="en" style="display:none">Red · IGP Pays d'Aude</p>
+                    <h3 class="flip-front-name">Cinsault Caladoc 2024</h3>
+                    <p class="flip-front-price">7,90 €</p>
+                    <button class="flip-front-more">+ d'infos</button>
+                  </div>
+                </div>
+                <div class="flip-back">
+                  <p class="flip-back-type" data-lang="fr">Rouge · IGP Pays d'Aude</p>
+                  <p class="flip-back-type" data-lang="en" style="display:none">Red · IGP Pays d'Aude</p>
+                  <h3 class="flip-back-name">Cinsault Caladoc 2024</h3>
+                  <p class="flip-back-price">7,90 €</p>
+                  <p class="flip-back-desc" data-lang="fr">60% Cinsault, 40% Caladoc · 11,5% vol.<br><br>Un rouge léger et fruité, aux notes de groseille et de framboise. Très accessible, avec une jolie vivacité. À déguster avec : grillades, planches de charcuterie, légumes rôtis.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">60% Cinsault, 40% Caladoc · 11.5% vol. A light, fruity red with notes of redcurrant and raspberry. Pairs well with grilled meats, charcuterie boards, roasted vegetables.</p>
+                  <div class="flip-back-actions">
+                    <button class="flip-back-retour" onclick="flipCard(2)" data-lang="fr">← Retour</button>
+                    <button class="flip-back-retour" onclick="flipCard(2)" data-lang="en" style="display:none">← Back</button>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 4 : ENTRE DEUX -->
           <div class="carousel-slide">
             <div class="flip-container">
               <div class="flip-card" id="flip-3">
                 <div class="flip-front">
                   <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank">
-                    <img src="images/rouge-entre-deux-2025.png" alt="Entre Deux" class="flip-front-img" style="object-position:center 5%;" />
+                    <img src="images/rouge-entre-deux-2025.png" alt="Entre Deux" class="flip-front-img" style="object-position:center 70%;" />
                   </a>
                   <div class="flip-front-body" onclick="flipCard(3)">
                     <p class="flip-front-type" data-lang="fr">Rouge · IGP Pays d'Oc</p>
@@ -725,13 +748,47 @@
                   <p class="flip-back-type" data-lang="en" style="display:none">Red · IGP Pays d'Oc Coteaux de Narbonne</p>
                   <h3 class="flip-back-name">Entre Deux 2025</h3>
                   <p class="flip-back-price">9,90 €</p>
-                  <p class="flip-back-desc" data-lang="fr">80% Marselan, 10% Cinsault, 10% Caladoc — 13,5% vol. Un rouge plus structuré mais toujours élégant. Arômes de fruits noirs, réglisse et épices douces. À déguster avec : viandes grillées, tajines, fromages affinés.</p>
-                  <p class="flip-back-desc" data-lang="en" style="display:none">80% Marselan, 10% Cinsault, 10% Caladoc — 13.5% vol. A structured yet elegant red. Dark fruits, liquorice and gentle spices. Pairs with grilled meats, tagines, aged cheeses.</p>
+                  <p class="flip-back-desc" data-lang="fr">80% Marselan, 10% Cinsault, 10% Caladoc · 13,5% vol. Un rouge structuré mais toujours élégant. Arômes de fruits noirs, réglisse et épices douces. À déguster avec : viandes grillées, tajines, fromages affinés.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">80% Marselan, 10% Cinsault, 10% Caladoc · 13.5% vol. A structured yet elegant red. Dark fruits, liquorice and gentle spices. Pairs with grilled meats, tagines, aged cheeses.</p>
                   <div class="flip-back-actions">
                     <button class="flip-back-retour" onclick="flipCard(3)" data-lang="fr">← Retour</button>
                     <button class="flip-back-retour" onclick="flipCard(3)" data-lang="en" style="display:none">← Back</button>
                     <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
                     <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 5 : MAGNUM -->
+          <div class="carousel-slide">
+            <div class="flip-container">
+              <div class="flip-card" id="flip-4">
+                <div class="flip-front">
+                  <a href="https://domainedesainteanne.sumupstore.com" target="_blank">
+                    <img src="images/domaine-sainte-anne---40-2.jpg" alt="Magnum Entre Deux" class="flip-front-img" />
+                  </a>
+                  <div class="flip-front-body" onclick="flipCard(4)">
+                    <p class="flip-front-type" data-lang="fr">Magnum Rouge · IGP Pays d'Oc</p>
+                    <p class="flip-front-type" data-lang="en" style="display:none">Magnum Red · IGP Pays d'Oc</p>
+                    <h3 class="flip-front-name">Entre Deux 2025</h3>
+                    <p class="flip-front-price">21,00 €</p>
+                    <button class="flip-front-more">+ d'infos</button>
+                  </div>
+                </div>
+                <div class="flip-back">
+                  <p class="flip-back-type" data-lang="fr">Magnum Rouge · IGP Pays d'Oc Coteaux de Narbonne</p>
+                  <p class="flip-back-type" data-lang="en" style="display:none">Magnum Red · IGP Pays d'Oc Coteaux de Narbonne</p>
+                  <h3 class="flip-back-name">Entre Deux 2025</h3>
+                  <p class="flip-back-price">21,00 €</p>
+                  <p class="flip-back-desc" data-lang="fr">80% Marselan, 10% Cinsault, 10% Caladoc · 13,5% vol. Un rouge structuré mais toujours élégant. Arômes de fruits noirs, réglisse et épices douces. À déguster avec : viandes grillées, tajines, fromages affinés.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">80% Marselan, 10% Cinsault, 10% Caladoc · 13.5% vol. A structured yet elegant red. Dark fruits, liquorice and gentle spices. Pairs with grilled meats, tagines, aged cheeses.</p>
+                  <div class="flip-back-actions">
+                    <button class="flip-back-retour" onclick="flipCard(4)" data-lang="fr">← Retour</button>
+                    <button class="flip-back-retour" onclick="flipCard(4)" data-lang="en" style="display:none">← Back</button>
+                    <a href="https://domainedesainteanne.sumupstore.com" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
+                    <a href="https://domainedesainteanne.sumupstore.com" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
                   </div>
                 </div>
               </div>
@@ -749,6 +806,7 @@
           <div class="carousel-dot" onclick="goToSlide(1)"></div>
           <div class="carousel-dot" onclick="goToSlide(2)"></div>
           <div class="carousel-dot" onclick="goToSlide(3)"></div>
+          <div class="carousel-dot" onclick="goToSlide(4)"></div>
         </div>
         <button class="carousel-btn" id="nextBtn" onclick="moveCarousel(1)">&gt;</button>
       </div>
@@ -759,8 +817,8 @@
       <strong data-lang="en" style="display:none">Order online:</strong>
       <span data-lang="fr"> cartons de 6 bouteilles, panachage libre. Frais de port offerts dès 100€. </span>
       <span data-lang="en" style="display:none"> cases of 6 bottles, mix freely. Free shipping from €100. </span>
-      <a href="https://domainedesainteanne.sumupstore.com/product/pack-decouverte-12-bouteilles" target="_blank" rel="noopener" data-lang="fr">Accéder à la boutique →</a>
-      <a href="https://domainedesainteanne.sumupstore.com/product/pack-decouverte-12-bouteilles" target="_blank" rel="noopener" data-lang="en" style="display:none">Visit the shop →</a>
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" data-lang="fr">Accéder à la boutique →</a>
+      <a href="https://domainedesainteanne.sumupstore.com" target="_blank" rel="noopener" data-lang="en" style="display:none">Visit the shop →</a>
     </div>
   </div>
 </section>
@@ -797,8 +855,8 @@
           <span class="oeno-card-icon">🏺</span>
           <h3 class="oeno-card-title" data-lang="fr">Visite de la cave</h3>
           <h3 class="oeno-card-title" data-lang="en" style="display:none">Cellar tour</h3>
-          <p class="oeno-card-price" data-lang="fr">8 € / personne <span style="font-weight:300;color:#aaa;">(offerte avec un carton)</span></p>
-          <p class="oeno-card-price" data-lang="en" style="display:none">€8 / person <span style="font-weight:300;color:#aaa;">(free with a case)</span></p>
+          <p class="oeno-card-price" data-lang="fr">Offerte dès l'achat d'un carton</p>
+          <p class="oeno-card-price" data-lang="en" style="display:none">Free with the purchase of a case</p>
           <p data-lang="fr">De la vendange à la mise en bouteille, explorez les cuves, le pressoir et le processus de vinification.</p>
           <p data-lang="en" style="display:none">From harvest to bottling, explore the tanks, press and winemaking process.</p>
           <p><em data-lang="fr">Lundi, mercredi, vendredi à 18h — 45 min.</em><em data-lang="en" style="display:none">Monday, Wednesday, Friday at 6pm — 45 min.</em></p>
@@ -1037,7 +1095,7 @@
 <script>
   // ===== CAROUSEL MOBILE =====
   let currentSlide = 0;
-  const totalSlides = 4;
+  const totalSlides = 5;
 
   function updateCarousel() {
     const track = document.getElementById('carouselTrack');
