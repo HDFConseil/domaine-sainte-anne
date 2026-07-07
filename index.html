@@ -23,7 +23,7 @@
       --or-light: #e8d5a3;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
+    html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
     body { font-family: 'Jost', sans-serif; background: var(--blanc); color: var(--noir); overflow-x: hidden; }
 
     /* ===== AGE CHECKER ===== */
@@ -257,13 +257,62 @@
     /* LANGUE — éléments cachés par défaut */
     [data-lang="en"] { display: none; }
 
-    /* RESPONSIVE */
-    @media (max-width: 1024px) {
-      .vins-grid { grid-template-columns: repeat(2, 1fr); }
-      .vin-row { grid-template-columns: 1fr; min-height: auto; }
-      .vin-row--reverse { direction: ltr; }
-      .vin-row-img { height: 260px; }
-      .vin-row-body { padding: 2rem; }
+    /* ===== MOBILE CAROUSEL VINS ===== */
+    .vins-carousel { display: none; }
+
+    @media (max-width: 768px) {
+      /* Fix overflow horizontal */
+      body { overflow-x: hidden; }
+      .section-container { padding: 0 1rem; }
+
+      /* Fix logo mobile */
+      nav { display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; height: 64px; }
+      .nav-logo { position: static; height: auto; transform: none; }
+      .nav-logo img { position: static; transform: none; height: 56px; top: auto; }
+      .nav-links { display: none; }
+      .nav-right { display: none; }
+      .nav-burger { display: flex; }
+
+      /* Cacher la grille desktop et afficher le carousel */
+      .vins-grid { display: none !important; }
+      .vins-carousel { display: block; position: relative; padding: 0 0 2rem; }
+
+      /* CAROUSEL */
+      .carousel-wrapper { overflow: hidden; width: 100%; }
+      .carousel-track { display: flex; transition: transform 0.4s ease; }
+      .carousel-slide { min-width: 100%; padding: 0 1rem; box-sizing: border-box; }
+
+      /* FLIP CARD */
+      .flip-container { perspective: 1000px; height: 500px; }
+      .flip-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+      .flip-card.flipped { transform: rotateY(180deg); }
+      .flip-front, .flip-back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--blanc); border-radius: 4px; overflow: hidden; }
+      .flip-back { transform: rotateY(180deg); padding: 2rem 1.5rem; display: flex; flex-direction: column; justify-content: center; }
+
+      /* FACE AVANT */
+      .flip-front-img { width: 100%; height: 320px; object-fit: cover; background: var(--creme-pale); display: block; cursor: pointer; }
+      .flip-front-body { padding: 0.9rem 1.25rem 0.9rem; position: relative; cursor: pointer; }
+      .flip-front-type { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 0.25rem; font-weight: 500; }
+      .flip-front-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400; color: var(--bordeaux-dark); margin-bottom: 0.2rem; }
+      .flip-front-price { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--or); font-weight: 600; }
+      .flip-front-more { position: absolute; bottom: 0.9rem; right: 1.25rem; font-size: 11px; letter-spacing: 0.1em; color: var(--bordeaux); cursor: pointer; border-bottom: 1px solid var(--or); padding-bottom: 2px; background: none; border-top: none; border-left: none; border-right: none; font-family: 'Jost', sans-serif; }
+
+      /* FACE ARRIÈRE */
+      .flip-back-type { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 0.5rem; font-weight: 500; }
+      .flip-back-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--bordeaux-dark); margin-bottom: 0.5rem; }
+      .flip-back-price { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--or); margin-bottom: 1rem; }
+      .flip-back-desc { font-size: 0.88rem; font-weight: 300; line-height: 1.75; color: #666; flex-grow: 1; overflow-y: auto; }
+      .flip-back-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; align-items: center; flex-wrap: wrap; }
+      .flip-back-btn { display: inline-block; padding: 10px 20px; background: var(--bordeaux); color: #fff; text-decoration: none; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; border-radius: 2px; }
+      .flip-back-retour { background: none; border: none; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bordeaux); cursor: pointer; font-family: 'Jost', sans-serif; text-decoration: underline; }
+
+      /* NAVIGATION CAROUSEL */
+      .carousel-nav { display: flex; justify-content: center; align-items: center; gap: 1.5rem; margin-top: 1.5rem; }
+      .carousel-btn { background: none; border: none; font-size: 1.8rem; color: var(--bordeaux); cursor: pointer; font-family: serif; padding: 0 0.5rem; line-height: 1; }
+      .carousel-btn:disabled { color: #ccc; cursor: default; }
+      .carousel-dots { display: flex; gap: 6px; }
+      .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--creme); border: 1px solid var(--bordeaux); cursor: pointer; transition: background 0.2s; }
+      .carousel-dot.active { background: var(--bordeaux); }
     }
     @media (max-width: 900px) {
       .nav-links, .nav-cta { display: none; }
@@ -546,6 +595,165 @@
         </div>
       </a>
     </div>
+    </div>
+
+    <!-- CAROUSEL MOBILE -->
+    <div class="vins-carousel">
+      <div class="carousel-wrapper">
+        <div class="carousel-track" id="carouselTrack">
+
+          <!-- SLIDE 1 -->
+          <div class="carousel-slide">
+            <div class="flip-container">
+              <div class="flip-card" id="flip-0">
+                <div class="flip-front">
+                  <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-a-part-egale-blanc-2025" target="_blank">
+                    <img src="images/bouteille blanc a part egale 2025.png" alt="À Part Égale" class="flip-front-img" />
+                  </a>
+                  <div class="flip-front-body" onclick="flipCard(0)">
+                    <p class="flip-front-type" data-lang="fr">Blanc · IGP Pays d'Aude</p>
+                    <p class="flip-front-type" data-lang="en" style="display:none">White · IGP Pays d'Aude</p>
+                    <h3 class="flip-front-name">À Part Égale 2025</h3>
+                    <p class="flip-front-price">8,50 €</p>
+                    <button class="flip-front-more">+ d'infos</button>
+                  </div>
+                </div>
+                <div class="flip-back">
+                  <p class="flip-back-type" data-lang="fr">Blanc · IGP Pays d'Aude</p>
+                  <p class="flip-back-type" data-lang="en" style="display:none">White · IGP Pays d'Aude</p>
+                  <h3 class="flip-back-name">À Part Égale 2025</h3>
+                  <p class="flip-back-price">8,50 €</p>
+                  <p class="flip-back-desc" data-lang="fr">Blanc frais et fruité, reflet de nos terroirs méditerranéens. Digeste et équilibré.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">Fresh and fruity white, reflecting our Mediterranean terroir. Digestible and balanced.</p>
+                  <div class="flip-back-actions">
+                    <button class="flip-back-retour" onclick="flipCard(0)" data-lang="fr">← Retour</button>
+                    <button class="flip-back-retour" onclick="flipCard(0)" data-lang="en" style="display:none">← Back</button>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-a-part-egale-blanc-2025" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-a-part-egale-blanc-2025" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 2 -->
+          <div class="carousel-slide">
+            <div class="flip-container">
+              <div class="flip-card" id="flip-1">
+                <div class="flip-front">
+                  <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank">
+                    <img src="images/bouteille rouge cinsault 2024.png" alt="Caladoc Cinsault" class="flip-front-img" style="object-position:center center;" />
+                  </a>
+                  <div class="flip-front-body" onclick="flipCard(1)">
+                    <p class="flip-front-type" data-lang="fr">Rouge · IGP Pays d'Aude</p>
+                    <p class="flip-front-type" data-lang="en" style="display:none">Red · IGP Pays d'Aude</p>
+                    <h3 class="flip-front-name">Caladoc Cinsault 2024</h3>
+                    <p class="flip-front-price">7,90 €</p>
+                    <button class="flip-front-more">+ d'infos</button>
+                  </div>
+                </div>
+                <div class="flip-back">
+                  <p class="flip-back-type" data-lang="fr">Rouge · IGP Pays d'Aude</p>
+                  <p class="flip-back-type" data-lang="en" style="display:none">Red · IGP Pays d'Aude</p>
+                  <h3 class="flip-back-name">Caladoc Cinsault 2024</h3>
+                  <p class="flip-back-price">7,90 €</p>
+                  <p class="flip-back-desc" data-lang="fr">Caladoc · Cinsault — 11,5% vol. Un rouge léger et fruité, aux notes de groseille et de framboise. Très accessible, avec une jolie vivacité. À déguster avec : grillades, planches de charcuterie, légumes rôtis.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">Caladoc · Cinsault — 11.5% vol. A light, fruity red with notes of redcurrant and raspberry. Pairs well with grilled meats, charcuterie boards, roasted vegetables.</p>
+                  <div class="flip-back-actions">
+                    <button class="flip-back-retour" onclick="flipCard(1)" data-lang="fr">← Retour</button>
+                    <button class="flip-back-retour" onclick="flipCard(1)" data-lang="en" style="display:none">← Back</button>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-rouge-caladoc-cinsault-2024" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 3 -->
+          <div class="carousel-slide">
+            <div class="flip-container">
+              <div class="flip-card" id="flip-2">
+                <div class="flip-front">
+                  <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank">
+                    <img src="images/bouteille fair light 2025.png" alt="Faire Light" class="flip-front-img" />
+                  </a>
+                  <div class="flip-front-body" onclick="flipCard(2)">
+                    <p class="flip-front-type" data-lang="fr">Rosé léger · Cinsault</p>
+                    <p class="flip-front-type" data-lang="en" style="display:none">Light rosé · Cinsault</p>
+                    <h3 class="flip-front-name">Faire Light 2025</h3>
+                    <p class="flip-front-price">7,20 €</p>
+                    <button class="flip-front-more">+ d'infos</button>
+                  </div>
+                </div>
+                <div class="flip-back">
+                  <p class="flip-back-type" data-lang="fr">Rosé léger · Cinsault</p>
+                  <p class="flip-back-type" data-lang="en" style="display:none">Light rosé · Cinsault</p>
+                  <h3 class="flip-back-name">Faire Light 2025</h3>
+                  <p class="flip-back-price">7,20 €</p>
+                  <p class="flip-back-desc" data-lang="fr">Plus léger encore, pensé pour la légèreté et la fraîcheur. Une cuvée moderne, idéale pour l'été.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">Even lighter, crafted for freshness and lightness. A modern cuvée, ideal for summer.</p>
+                  <div class="flip-back-actions">
+                    <button class="flip-back-retour" onclick="flipCard(2)" data-lang="fr">← Retour</button>
+                    <button class="flip-back-retour" onclick="flipCard(2)" data-lang="en" style="display:none">← Back</button>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-faire-light-rose-2025" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 4 -->
+          <div class="carousel-slide">
+            <div class="flip-container">
+              <div class="flip-card" id="flip-3">
+                <div class="flip-front">
+                  <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank">
+                    <img src="images/rouge entre deux 2025.png" alt="Entre Deux" class="flip-front-img" style="object-position:center 5%;" />
+                  </a>
+                  <div class="flip-front-body" onclick="flipCard(3)">
+                    <p class="flip-front-type" data-lang="fr">Rouge · IGP Pays d'Oc</p>
+                    <p class="flip-front-type" data-lang="en" style="display:none">Red · IGP Pays d'Oc</p>
+                    <h3 class="flip-front-name">Entre Deux 2025</h3>
+                    <p class="flip-front-price">9,90 €</p>
+                    <button class="flip-front-more">+ d'infos</button>
+                  </div>
+                </div>
+                <div class="flip-back">
+                  <p class="flip-back-type" data-lang="fr">Rouge · IGP Pays d'Oc Coteaux de Narbonne</p>
+                  <p class="flip-back-type" data-lang="en" style="display:none">Red · IGP Pays d'Oc Coteaux de Narbonne</p>
+                  <h3 class="flip-back-name">Entre Deux 2025</h3>
+                  <p class="flip-back-price">9,90 €</p>
+                  <p class="flip-back-desc" data-lang="fr">80% Marselan, 10% Cinsault, 10% Caladoc — 13,5% vol. Un rouge plus structuré mais toujours élégant. Arômes de fruits noirs, réglisse et épices douces. À déguster avec : viandes grillées, tajines, fromages affinés.</p>
+                  <p class="flip-back-desc" data-lang="en" style="display:none">80% Marselan, 10% Cinsault, 10% Caladoc — 13.5% vol. A structured yet elegant red. Dark fruits, liquorice and gentle spices. Pairs with grilled meats, tagines, aged cheeses.</p>
+                  <div class="flip-back-actions">
+                    <button class="flip-back-retour" onclick="flipCard(3)" data-lang="fr">← Retour</button>
+                    <button class="flip-back-retour" onclick="flipCard(3)" data-lang="en" style="display:none">← Back</button>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank" class="flip-back-btn" data-lang="fr">Commander →</a>
+                    <a href="https://domainedesainteanne.sumupstore.com/article/bouteille-entre-deux-rouge-2025" target="_blank" class="flip-back-btn" data-lang="en" style="display:none">Order →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- NAVIGATION -->
+      <div class="carousel-nav">
+        <button class="carousel-btn" id="prevBtn" onclick="moveCarousel(-1)">&lt;</button>
+        <div class="carousel-dots" id="carouselDots">
+          <div class="carousel-dot active" onclick="goToSlide(0)"></div>
+          <div class="carousel-dot" onclick="goToSlide(1)"></div>
+          <div class="carousel-dot" onclick="goToSlide(2)"></div>
+          <div class="carousel-dot" onclick="goToSlide(3)"></div>
+        </div>
+        <button class="carousel-btn" id="nextBtn" onclick="moveCarousel(1)">&gt;</button>
+      </div>
+    </div>
+
     <div class="vins-info fade-up">
       <strong data-lang="fr">Commander en ligne :</strong>
       <strong data-lang="en" style="display:none">Order online:</strong>
@@ -827,6 +1035,46 @@
 </script>
 
 <script>
+  // ===== CAROUSEL MOBILE =====
+  let currentSlide = 0;
+  const totalSlides = 4;
+
+  function updateCarousel() {
+    const track = document.getElementById('carouselTrack');
+    if (!track) return;
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentSlide);
+    });
+    document.getElementById('prevBtn').disabled = currentSlide === 0;
+    document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+  }
+
+  function moveCarousel(dir) {
+    const newSlide = currentSlide + dir;
+    if (newSlide >= 0 && newSlide < totalSlides) {
+      currentSlide = newSlide;
+      updateCarousel();
+    }
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateCarousel();
+  }
+
+  function flipCard(index) {
+    document.getElementById('flip-' + index).classList.toggle('flipped');
+  }
+
+  // SWIPE
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) moveCarousel(diff > 0 ? 1 : -1);
+  }, { passive: true });
+
   // AGE CHECKER
   function confirmAge() {
     localStorage.setItem('ageVerified', 'true');
