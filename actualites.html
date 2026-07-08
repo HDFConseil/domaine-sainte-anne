@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Actualités — Domaine de Sainte Anne</title>
+  <meta name="description" content="Les dernières actualités du Domaine de Sainte Anne — événements, vendanges, soirées dégustation." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Actualités — Domaine de Sainte Anne" />
+  <meta property="og:description" content="Les dernières actualités du Domaine de Sainte Anne — événements, vendanges, soirées dégustation." />
+  <meta property="og:image" content="https://domainedesainteanne.fr/images/accueil-vigne.jpeg" />
+  <meta property="og:url" content="https://domainedesainteanne.fr/actualites.html" />
+  <meta name="twitter:card" content="summary_large_image" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
@@ -42,6 +49,10 @@
     .actu-card-texte { font-size: 0.95rem; font-weight: 300; line-height: 1.85; color: #555; white-space: pre-wrap; }
     .actu-card-lien { display: inline-block; margin-top: 1.25rem; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bordeaux); text-decoration: none; border-bottom: 1px solid var(--or); padding-bottom: 2px; transition: color 0.2s; }
     .actu-card-lien:hover { color: var(--or); }
+    .actu-share { display: flex; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #eee; align-items: center; }
+    .actu-share span { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #aaa; margin-right: 0.25rem; }
+    .actu-share-btn { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bordeaux); border: 1px solid #e0d8db; padding: 6px 12px; transition: all 0.2s; background: none; cursor: pointer; font-family: 'Jost', sans-serif; }
+    .actu-share-btn:hover { border-color: var(--bordeaux); background: var(--creme-pale); }
     .loading { text-align: center; padding: 4rem; color: #999; font-style: italic; }
     .empty { text-align: center; padding: 4rem; color: #bbb; font-style: italic; }
 
@@ -84,6 +95,19 @@
   const { createClient } = window.supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  function partagerActu(id, titre) {
+    const url = `https://domainedesainteanne.fr/actualites.html#actu-${id}`;
+    if (navigator.share) {
+      navigator.share({ title: titre, text: titre, url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Lien copié ! Vous pouvez le coller où vous voulez.');
+      }).catch(() => {
+        prompt('Copiez ce lien :', url);
+      });
+    }
+  }
+
   function formatDate(dateStr) {
     const d = new Date(dateStr);
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -118,6 +142,12 @@
         ${a.sous_titre ? `<p class="actu-card-sous-titre">${a.sous_titre}</p>` : ''}
         ${a.texte ? `<p class="actu-card-texte">${a.texte}</p>` : ''}
         ${a.lien_url ? `<a href="${a.lien_url}" target="_blank" rel="noopener" class="actu-card-lien">${a.lien_label || 'En savoir plus'} →</a>` : ''}
+        <div class="actu-share">
+          <span>Partager :</span>
+          <a class="actu-share-btn" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://domainedesainteanne.fr/actualites.html#actu-' + a.id)}&quote=${encodeURIComponent(a.titre)}">Facebook</a>
+          <a class="actu-share-btn" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(a.titre + ' — ' + 'https://domainedesainteanne.fr/actualites.html#actu-' + a.id)}">WhatsApp</a>
+          <button class="actu-share-btn" onclick="partagerActu('${a.id}', '${a.titre.replace(/'/g, "\\'")}')">Partager</button>
+        </div>
       </div>
     `).join('');
   }
