@@ -1089,14 +1089,15 @@
 
     const a = data[0];
     container.innerHTML = `
-      <div class="actu-card" style="background:#1a1a1a;padding:2rem;border-left:3px solid var(--or);">
-        ${renderImages(a)}
-        <div class="actu-date">${formatDate(a.date)}</div>
-        <h3 class="actu-title">${a.titre}</h3>
-        ${a.sous_titre ? `<p style="font-size:0.9rem;color:var(--or-light);margin-bottom:0.75rem;font-style:italic;">${a.sous_titre}</p>` : ''}
-        ${a.texte ? `<p class="actu-text">${a.texte}</p>` : ''}
-        ${a.lien_url ? `<a href="${a.lien_url}" target="_blank" rel="noopener" style="display:inline-block;margin-top:1rem;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--or);text-decoration:none;border-bottom:1px solid var(--or);padding-bottom:2px;">${a.lien_label || 'En savoir plus'} →</a>` : ''}
-      </div>
+      <a href="actualites.html#actu-${a.id}" style="text-decoration:none;display:block;">
+        <div class="actu-card" style="background:#1a1a1a;padding:2rem;border-left:3px solid var(--or);transition:background 0.2s;">
+          ${renderImages(a)}
+          <div class="actu-date">${formatDate(a.date)}</div>
+          <h3 class="actu-title" style="text-decoration:underline;text-decoration-color:rgba(201,168,76,0.4);text-underline-offset:4px;">${a.titre}</h3>
+          ${a.sous_titre ? `<p style="font-size:0.9rem;color:var(--or-light);margin-top:0.5rem;font-style:italic;">${a.sous_titre}</p>` : ''}
+          <p style="margin-top:1rem;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--or);">Lire l'actualité →</p>
+        </div>
+      </a>
     `;
   }
 
