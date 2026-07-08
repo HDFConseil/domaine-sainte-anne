@@ -79,6 +79,9 @@
     .btn-delete:hover { border-color: #c0392b; color: #c0392b; }
     .btn-edit { background: none; border: 1px solid var(--or); color: var(--bordeaux); padding: 7px 14px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
     .btn-edit:hover { background: var(--or); color: #fff; }
+    .btn-share { background: none; border: 1px solid #ddd; color: #888; padding: 7px 12px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+    .btn-share:hover { border-color: var(--bordeaux); color: var(--bordeaux); }
+    .actu-item-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
     .empty-state { text-align: center; padding: 3rem; color: #bbb; font-style: italic; font-size: 0.9rem; }
     .loading { text-align: center; padding: 2rem; color: #999; font-size: 0.9rem; }
 
@@ -90,6 +93,8 @@
       .admin-nav li a { padding: 10px 1rem; }
       .admin-main { padding: 1.5rem; }
       .form-row { grid-template-columns: 1fr; }
+      .actu-item { flex-direction: column; align-items: stretch; }
+      .actu-item-actions { justify-content: flex-start; }
     }
   </style>
 </head>
@@ -351,6 +356,42 @@
     }
   }
 
+  // PARTAGE RÉSEAUX SOCIAUX
+  function copierTexteReseaux(id) {
+    const a = actualitesCache.find(x => String(x.id) === String(id));
+    if (!a) return;
+    let texte = a.titre;
+    if (a.sous_titre) texte += `\n${a.sous_titre}`;
+    if (a.texte) texte += `\n\n${a.texte}`;
+    texte += `\n\n🍷 Domaine de Sainte Anne — Marcorignan\ndomainedesainteanne.fr`;
+
+    navigator.clipboard.writeText(texte).then(() => {
+      const btn = document.getElementById('btn-copy-' + id);
+      const original = btn.textContent;
+      btn.textContent = '✅ Copié !';
+      setTimeout(() => { btn.textContent = original; }, 2000);
+    }).catch(() => {
+      alert('Impossible de copier automatiquement. Voici le texte à copier manuellement :\n\n' + texte);
+    });
+  }
+
+  function ouvrirPhotos(id) {
+    const a = actualitesCache.find(x => String(x.id) === String(id));
+    if (!a) return;
+    const imgs = (a.images && a.images.length) ? a.images : (a.image_url ? [a.image_url] : []);
+    if (!imgs.length) { alert("Cette actualité n'a pas de photo."); return; }
+    imgs.forEach(url => window.open(url, '_blank'));
+  }
+
+  function partagerFacebook(id) {
+    const a = actualitesCache.find(x => String(x.id) === String(id));
+    if (!a) return;
+    const pageUrl = 'https://domainedesainteanne.fr/actualites.html';
+    const texte = a.sous_titre ? `${a.titre} — ${a.sous_titre}` : a.titre;
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}&quote=${encodeURIComponent(texte)}`;
+    window.open(shareUrl, '_blank', 'width=600,height=500');
+  }
+
   // ÉDITION
   function modifierActualite(id) {
     const a = actualitesCache.find(x => String(x.id) === String(id));
@@ -421,7 +462,10 @@
           <div class="actu-item-titre">${a.titre}</div>
           ${a.sous_titre ? `<div class="actu-item-sous-titre">${a.sous_titre}</div>` : ''}
         </div>
-        <div style="display:flex;gap:8px;flex-shrink:0;">
+        <div class="actu-item-actions">
+          <button class="btn-share" onclick="copierTexteReseaux('${a.id}')" id="btn-copy-${a.id}" title="Copier le texte pour Instagram/Facebook">📋 Copier texte</button>
+          <button class="btn-share" onclick="ouvrirPhotos('${a.id}')" title="Ouvrir la/les photo(s) pour les enregistrer">🖼️ Photo(s)</button>
+          <button class="btn-share" onclick="partagerFacebook('${a.id}')" title="Ouvrir la fenêtre de partage Facebook">📘 Facebook</button>
           <button class="btn-edit" onclick="modifierActualite('${a.id}')">Modifier</button>
           <button class="btn-delete" onclick="supprimerActualite('${a.id}')">Supprimer</button>
         </div>
