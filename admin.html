@@ -77,6 +77,8 @@
     .actu-item-sous-titre { font-size: 0.82rem; color: #999; margin-top: 2px; }
     .btn-delete { background: none; border: 1px solid #eee; color: #ccc; padding: 7px 14px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
     .btn-delete:hover { border-color: #c0392b; color: #c0392b; }
+    .btn-edit { background: none; border: 1px solid var(--or); color: var(--bordeaux); padding: 7px 14px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+    .btn-edit:hover { background: var(--or); color: #fff; }
     .empty-state { text-align: center; padding: 3rem; color: #bbb; font-style: italic; font-size: 0.9rem; }
     .loading { text-align: center; padding: 2rem; color: #999; font-size: 0.9rem; }
 
@@ -99,7 +101,8 @@
     <img src="images/logo-steanne.png" alt="Logo" />
     <h1>Administration</h1>
     <p>Domaine de Sainte Anne</p>
-    <input type="password" id="passwordInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') login()" />
+    <input type="email" id="emailInput" placeholder="Adresse email" autocomplete="username" onkeydown="if(event.key==='Enter') document.getElementById('passwordInput').focus()" />
+    <input type="password" id="passwordInput" placeholder="Mot de passe" autocomplete="current-password" onkeydown="if(event.key==='Enter') login()" />
     <button onclick="login()">Se connecter</button>
     <p class="login-error" id="loginError"></p>
   </div>
@@ -128,8 +131,8 @@
     <div style="padding:2.5rem;">
     <div id="section-nouvelle">
       <div class="admin-header">
-        <h2>Nouvelle actualité</h2>
-        <p>Créez une nouvelle actualité pour le site du domaine.</p>
+        <h2 id="form-title">Nouvelle actualité</h2>
+        <p>Créez ou modifiez une actualité pour le site du domaine.</p>
       </div>
       <div class="form-card">
         <div class="form-row">
@@ -161,11 +164,12 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Photo (optionnelle)</label>
-          <input type="file" id="actu-image" accept="image/*" style="background:#fff;padding:8px;" />
-          <div id="image-preview" style="margin-top:0.75rem;display:none;"><img id="preview-img" style="max-height:180px;max-width:100%;object-fit:contain;border:1px solid #eee;" /></div>
+          <label>Photos (optionnelles, plusieurs possibles)</label>
+          <input type="file" id="actu-image" accept="image/*" multiple style="background:#fff;padding:8px;" />
+          <div id="image-preview" style="margin-top:0.75rem;display:none;"></div>
         </div>
         <button class="btn-submit" id="btn-publier" onclick="publierActualite()">Publier l'actualité</button>
+        <button type="button" id="btn-annuler-edition" onclick="annulerEdition()" style="display:none;margin-left:10px;background:none;border:1px solid #ccc;color:#777;padding:13px 24px;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;">Annuler</button>
         <p class="success-msg" id="success-msg" style="display:none;">✅ Actualité publiée avec succès!</p>
         <p class="error-msg" id="error-msg" style="display:none;"></p>
       </div>
@@ -189,34 +193,42 @@
   // ====== CONFIGURATION SUPABASE ======
   const SUPABASE_URL = 'https://ksifjyshjhjdsiinycci.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzaWZqeXNoamhqZHNpaW55Y2NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0Mjc5NTQsImV4cCI6MjA5NTAwMzk1NH0.pLXvzDImEOiTawDbEFv9_cXOgy_rTlcl6jJEf7P4kXc';
-  const MOT_DE_PASSE_ADMIN = 'sainteanne2025'; // Change ce mot de passe!
   // ====================================
 
   const { createClient } = window.supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  let editingId = null;
+  let actualitesCache = [];
+
   // LOGIN
-  function login() {
+  async function login() {
+    const email = document.getElementById('emailInput').value.trim();
     const pwd = document.getElementById('passwordInput').value;
-    if (pwd === MOT_DE_PASSE_ADMIN) {
-      sessionStorage.setItem('admin_auth', 'true');
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminLayout').style.display = 'flex';
-    } else {
-      document.getElementById('loginError').textContent = 'Mot de passe incorrect.';
+    document.getElementById('loginError').textContent = '';
+    const { error } = await db.auth.signInWithPassword({ email, password: pwd });
+    if (error) {
+      document.getElementById('loginError').textContent = 'Email ou mot de passe incorrect.';
+      return;
     }
-  }
-
-  function logout() {
-    sessionStorage.removeItem('admin_auth');
-    location.reload();
-  }
-
-  // Check si déjà connecté
-  if (sessionStorage.getItem('admin_auth') === 'true') {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminLayout').style.display = 'flex';
   }
+
+  async function logout() {
+    await db.auth.signOut();
+    location.reload();
+  }
+
+  // Check si déjà connecté (session Supabase persistante)
+  async function checkSession() {
+    const { data: { session } } = await db.auth.getSession();
+    if (session) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminLayout').style.display = 'flex';
+    }
+  }
+  checkSession();
 
   // NAVIGATION
   function showSection(section) {
@@ -227,19 +239,24 @@
     if (section === 'liste') chargerActualites();
   }
 
-  // PUBLIER
-  // PREVIEW IMAGE
+  // PREVIEW IMAGES (plusieurs possibles)
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('actu-image').addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
+      const files = Array.from(this.files);
+      const preview = document.getElementById('image-preview');
+      if (!files.length) { preview.style.display = 'none'; preview.innerHTML = ''; return; }
+      preview.innerHTML = '';
+      files.forEach(file => {
         const reader = new FileReader();
         reader.onload = e => {
-          document.getElementById('preview-img').src = e.target.result;
-          document.getElementById('image-preview').style.display = 'block';
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.style.cssText = 'max-height:100px;max-width:140px;object-fit:cover;border:1px solid #eee;margin:0 6px 6px 0;';
+          preview.appendChild(img);
         };
         reader.readAsDataURL(file);
-      }
+      });
+      preview.style.display = 'block';
     });
   });
 
@@ -250,7 +267,7 @@
     const texte = document.getElementById('actu-texte').value.trim();
     const lien_url = document.getElementById('actu-lien-url').value.trim();
     const lien_label = document.getElementById('actu-lien-label').value.trim();
-    const imageFile = document.getElementById('actu-image').files[0];
+    const imageFiles = Array.from(document.getElementById('actu-image').files);
 
     document.getElementById('success-msg').style.display = 'none';
     document.getElementById('error-msg').style.display = 'none';
@@ -263,61 +280,125 @@
 
     const btn = document.getElementById('btn-publier');
     btn.disabled = true;
-    btn.textContent = 'Publication...';
+    btn.textContent = editingId ? 'Mise à jour...' : 'Publication...';
 
-    let image_url = null;
+    // On ne touche aux images que si de nouvelles photos ont été sélectionnées.
+    // En mode édition sans nouvelle photo, les images existantes sont conservées.
+    let images = null;
 
-    // UPLOAD IMAGE si présente
-    if (imageFile) {
-      btn.textContent = 'Upload image...';
-      const ext = imageFile.name.split('.').pop();
-      const fileName = `${Date.now()}.${ext}`;
-      const { data: uploadData, error: uploadError } = await db.storage
-        .from('actualites-sainte-anne-images')
-        .upload(fileName, imageFile, { cacheControl: '3600', upsert: false });
+    if (imageFiles.length) {
+      btn.textContent = 'Upload des photos...';
+      images = [];
+      for (const file of imageFiles) {
+        const ext = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const { error: uploadError } = await db.storage
+          .from('actualites-sainte-anne-images')
+          .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
-      if (uploadError) {
-        btn.disabled = false;
-        btn.textContent = "Publier l'actualité";
-        document.getElementById('error-msg').textContent = 'Erreur upload image: ' + uploadError.message;
-        document.getElementById('error-msg').style.display = 'block';
-        return;
+        if (uploadError) {
+          btn.disabled = false;
+          btn.textContent = editingId ? 'Mettre à jour' : "Publier l'actualité";
+          document.getElementById('error-msg').textContent = 'Erreur upload image: ' + uploadError.message;
+          document.getElementById('error-msg').style.display = 'block';
+          return;
+        }
+
+        const { data: urlData } = db.storage
+          .from('actualites-sainte-anne-images')
+          .getPublicUrl(fileName);
+        images.push(urlData.publicUrl);
       }
-
-      const { data: urlData } = db.storage
-        .from('actualites-sainte-anne-images')
-        .getPublicUrl(fileName);
-      image_url = urlData.publicUrl;
     }
 
-    btn.textContent = 'Publication...';
-    const { error } = await db.from('actualites_sainte_anne').insert([{
+    btn.textContent = editingId ? 'Mise à jour...' : 'Publication...';
+
+    const payload = {
       date, titre,
       sous_titre: sous_titre || null,
       texte: texte || null,
       lien_url: lien_url || null,
       lien_label: lien_label || null,
-      image_url
-    }]);
+    };
+    if (images !== null) {
+      payload.images = images;
+      payload.image_url = images[0] || null;
+    } else if (!editingId) {
+      payload.images = [];
+      payload.image_url = null;
+    }
+
+    let error;
+    if (editingId) {
+      ({ error } = await db.from('actualites_sainte_anne').update(payload).eq('id', editingId));
+    } else {
+      ({ error } = await db.from('actualites_sainte_anne').insert([payload]));
+    }
 
     btn.disabled = false;
-    btn.textContent = "Publier l'actualité";
 
     if (error) {
+      btn.textContent = editingId ? 'Mettre à jour' : "Publier l'actualité";
       document.getElementById('error-msg').textContent = 'Erreur: ' + error.message;
       document.getElementById('error-msg').style.display = 'block';
     } else {
+      const wasEditing = !!editingId;
+      document.getElementById('success-msg').textContent = wasEditing ? '✅ Actualité mise à jour avec succès !' : '✅ Actualité publiée avec succès !';
       document.getElementById('success-msg').style.display = 'block';
-      document.getElementById('actu-date').value = '';
-      document.getElementById('actu-titre').value = '';
-      document.getElementById('actu-sous-titre').value = '';
-      document.getElementById('actu-texte').value = '';
-      document.getElementById('actu-lien-url').value = '';
-      document.getElementById('actu-lien-label').value = '';
-      document.getElementById('actu-image').value = '';
-      document.getElementById('image-preview').style.display = 'none';
+      annulerEdition();
+      if (document.getElementById('section-liste').style.display !== 'none') chargerActualites();
       setTimeout(() => document.getElementById('success-msg').style.display = 'none', 4000);
     }
+  }
+
+  // ÉDITION
+  function modifierActualite(id) {
+    const a = actualitesCache.find(x => String(x.id) === String(id));
+    if (!a) return;
+    editingId = id;
+
+    document.getElementById('actu-date').value = a.date || '';
+    document.getElementById('actu-titre').value = a.titre || '';
+    document.getElementById('actu-sous-titre').value = a.sous_titre || '';
+    document.getElementById('actu-texte').value = a.texte || '';
+    document.getElementById('actu-lien-url').value = a.lien_url || '';
+    document.getElementById('actu-lien-label').value = a.lien_label || '';
+    document.getElementById('actu-image').value = '';
+
+    const existingImages = (a.images && a.images.length) ? a.images : (a.image_url ? [a.image_url] : []);
+    const preview = document.getElementById('image-preview');
+    if (existingImages.length) {
+      preview.innerHTML = existingImages.map(url =>
+        `<img src="${url}" style="max-height:100px;max-width:140px;object-fit:cover;border:1px solid #eee;margin:0 6px 6px 0;" />`
+      ).join('') + '<p style="font-size:0.78rem;color:#999;margin-top:6px;width:100%;">Photo(s) actuelle(s) — sélectionnez de nouvelles photos ci-dessus pour les remplacer, ou laissez vide pour les conserver.</p>';
+      preview.style.display = 'block';
+    } else {
+      preview.innerHTML = '';
+      preview.style.display = 'none';
+    }
+
+    document.getElementById('form-title').textContent = "Modifier l'actualité";
+    document.getElementById('btn-publier').textContent = 'Mettre à jour';
+    document.getElementById('btn-annuler-edition').style.display = 'inline-block';
+
+    showSection('nouvelle');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function annulerEdition() {
+    editingId = null;
+    document.getElementById('actu-date').value = '';
+    document.getElementById('actu-titre').value = '';
+    document.getElementById('actu-sous-titre').value = '';
+    document.getElementById('actu-texte').value = '';
+    document.getElementById('actu-lien-url').value = '';
+    document.getElementById('actu-lien-label').value = '';
+    document.getElementById('actu-image').value = '';
+    document.getElementById('image-preview').style.display = 'none';
+    document.getElementById('image-preview').innerHTML = '';
+    document.getElementById('form-title').textContent = 'Nouvelle actualité';
+    document.getElementById('btn-publier').textContent = "Publier l'actualité";
+    document.getElementById('btn-annuler-edition').style.display = 'none';
   }
 
   // CHARGER LA LISTE
@@ -331,6 +412,8 @@
     if (error) { list.innerHTML = '<div class="empty-state">Erreur de chargement.</div>'; return; }
     if (!data || data.length === 0) { list.innerHTML = '<div class="empty-state">Aucune actualité publiée pour l\'instant.</div>'; return; }
 
+    actualitesCache = data;
+
     list.innerHTML = data.map(a => `
       <div class="actu-item" id="actu-${a.id}">
         <div class="actu-item-info">
@@ -338,7 +421,10 @@
           <div class="actu-item-titre">${a.titre}</div>
           ${a.sous_titre ? `<div class="actu-item-sous-titre">${a.sous_titre}</div>` : ''}
         </div>
-        <button class="btn-delete" onclick="supprimerActualite('${a.id}')">Supprimer</button>
+        <div style="display:flex;gap:8px;flex-shrink:0;">
+          <button class="btn-edit" onclick="modifierActualite('${a.id}')">Modifier</button>
+          <button class="btn-delete" onclick="supprimerActualite('${a.id}')">Supprimer</button>
+        </div>
       </div>
     `).join('');
   }

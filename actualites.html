@@ -88,6 +88,17 @@
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
+  function renderImages(a) {
+    const imgs = (a.images && a.images.length) ? a.images : (a.image_url ? [a.image_url] : []);
+    if (!imgs.length) return '';
+    if (imgs.length === 1) {
+      return `<img src="${imgs[0]}" alt="${a.titre}" style="width:100%;max-height:320px;object-fit:cover;margin-bottom:1.5rem;" />`;
+    }
+    return `<div style="display:grid;grid-template-columns:repeat(${Math.min(imgs.length, 3)}, 1fr);gap:6px;margin-bottom:1.5rem;">
+      ${imgs.map(url => `<img src="${url}" alt="${a.titre}" style="width:100%;height:180px;object-fit:cover;" />`).join('')}
+    </div>`;
+  }
+
   async function chargerActualites() {
     const container = document.getElementById('actu-container');
     const { data, error } = await db.from('actualites_sainte_anne')
@@ -100,7 +111,7 @@
 
     container.innerHTML = data.map(a => `
       <div class="actu-card">
-        ${a.image_url ? `<img src="${a.image_url}" alt="${a.titre}" style="width:100%;max-height:320px;object-fit:cover;margin-bottom:1.5rem;" />` : ''}
+        ${renderImages(a)}
         <div class="actu-card-date">${formatDate(a.date)}</div>
         <h2 class="actu-card-titre">${a.titre}</h2>
         ${a.sous_titre ? `<p class="actu-card-sous-titre">${a.sous_titre}</p>` : ''}
