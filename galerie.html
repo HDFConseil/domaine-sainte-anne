@@ -69,42 +69,42 @@
   <h1>Galerie <em>photo</em></h1>
 </div>
 
-<div class="galerie-grid">
-  <div class="galerie-item galerie-item--tall" onclick="ouvrirPhoto('images/domaine-sainte-anne---04.jpg')">
-    <img src="images/domaine-sainte-anne---04.jpg" alt="Domaine de Sainte Anne" />
+<div class="galerie-grid" id="galerie-grid">
+  <div class="galerie-item galerie-item--tall">
+    <img src="images/domaine-sainte-anne---04.jpg" alt="Domaine de Sainte Anne" loading="eager" />
   </div>
-  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---06.jpg')">
-    <img src="images/domaine-sainte-anne---06.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item">
+    <img src="images/domaine-sainte-anne---06.jpg" alt="Domaine de Sainte Anne" loading="eager" />
   </div>
-  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---13.jpg')">
-    <img src="images/domaine-sainte-anne---13.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item">
+    <img src="images/domaine-sainte-anne---13.jpg" alt="Domaine de Sainte Anne" loading="eager" />
   </div>
-  <div class="galerie-item galerie-item--wide" onclick="ouvrirPhoto('images/domaine-sainte-anne---17.jpg')">
-    <img src="images/domaine-sainte-anne---17.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item galerie-item--wide">
+    <img src="images/domaine-sainte-anne---17.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
-  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---21.jpg')">
-    <img src="images/domaine-sainte-anne---21.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item">
+    <img src="images/domaine-sainte-anne---21.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
-  <div class="galerie-item galerie-item--tall" onclick="ouvrirPhoto('images/domaine-sainte-anne---22.jpg')">
-    <img src="images/domaine-sainte-anne---22.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item galerie-item--tall">
+    <img src="images/domaine-sainte-anne---22.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
-  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---39.jpg')">
-    <img src="images/domaine-sainte-anne---39.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item">
+    <img src="images/domaine-sainte-anne---39.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
-  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---40-2.jpg')">
-    <img src="images/domaine-sainte-anne---40-2.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item">
+    <img src="images/domaine-sainte-anne---40-2.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
-  <div class="galerie-item galerie-item--wide" onclick="ouvrirPhoto('images/domaine-sainte-anne---49.jpg')">
-    <img src="images/domaine-sainte-anne---49.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item galerie-item--wide">
+    <img src="images/domaine-sainte-anne---49.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
-  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---53.jpg')">
-    <img src="images/domaine-sainte-anne---53.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item">
+    <img src="images/domaine-sainte-anne---53.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
-  <div class="galerie-item" onclick="ouvrirPhoto('images/img_1746.jpg')">
-    <img src="images/img_1746.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item">
+    <img src="images/img_1746.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
-  <div class="galerie-item galerie-item--tall" onclick="ouvrirPhoto('images/img_2279.jpg')">
-    <img src="images/img_2279.jpg" alt="Domaine de Sainte Anne" />
+  <div class="galerie-item galerie-item--tall">
+    <img src="images/img_2279.jpg" alt="Domaine de Sainte Anne" loading="lazy" />
   </div>
 </div>
 
@@ -126,6 +126,14 @@
     document.getElementById('lightbox').classList.remove('open');
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') fermerPhoto(); });
+
+  // Délégation d'événements : un seul écouteur pour toute la grille, plus fiable qu'un onclick par tuile
+  document.getElementById('galerie-grid').addEventListener('click', e => {
+    const item = e.target.closest('.galerie-item');
+    if (!item) return;
+    const img = item.querySelector('img');
+    if (img) ouvrirPhoto(img.src);
+  });
 </script>
 
 </body>
