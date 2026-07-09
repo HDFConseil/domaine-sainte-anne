@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galerie photo — Domaine de Sainte Anne</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bordeaux: #61394a;
+      --bordeaux-dark: #3a2530;
+      --or: #c9a84c;
+      --or-light: #e8d5a3;
+      --creme-pale: #f5f0f2;
+      --blanc: #fdfbfc;
+      --noir: #171717;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jost', sans-serif; background: var(--creme-pale); color: var(--noir); }
+
+    nav { background: var(--bordeaux); padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 60px; width: auto; object-fit: contain; }
+    .nav-back { text-decoration: none; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.7); transition: color 0.2s; }
+    .nav-back:hover { color: var(--or); }
+
+    .page-header { background: var(--bordeaux); padding: 4rem 2rem 3rem; text-align: center; }
+    .page-header p { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--or); margin-bottom: 1rem; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; color: #fff; }
+    .page-header h1 em { font-style: italic; color: var(--or-light); }
+
+    .galerie-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 280px; gap: 4px; max-width: 1400px; margin: 0 auto; padding: 3rem 1rem; }
+    .galerie-item { overflow: hidden; cursor: pointer; }
+    .galerie-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s; }
+    .galerie-item:hover img { transform: scale(1.05); }
+    .galerie-item--tall { grid-row: span 2; }
+    .galerie-item--wide { grid-column: span 2; }
+
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(23,23,23,0.95); z-index: 999; align-items: center; justify-content: center; padding: 2rem; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .lightbox-close { position: absolute; top: 1.5rem; right: 2rem; color: #fff; font-size: 2.5rem; cursor: pointer; line-height: 1; background: none; border: none; }
+
+    footer { background: var(--noir); padding: 2rem; text-align: center; }
+    footer p { font-size: 11px; color: rgba(255,255,255,0.3); }
+
+    @media (max-width: 900px) {
+      .galerie-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 220px; }
+      .galerie-item--tall { grid-row: span 1; }
+      .galerie-item--wide { grid-column: span 2; }
+    }
+    @media (max-width: 560px) {
+      .galerie-grid { grid-template-columns: 1fr; }
+      .galerie-item--wide { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="images/logo-steanne.png" alt="Domaine de Sainte Anne" />
+  </a>
+  <a href="index.html" class="nav-back">← Retour au site</a>
+</nav>
+
+<div class="page-header">
+  <p>Domaine de Sainte Anne</p>
+  <h1>Galerie <em>photo</em></h1>
+</div>
+
+<div class="galerie-grid">
+  <div class="galerie-item galerie-item--tall" onclick="ouvrirPhoto('images/domaine-sainte-anne---04.jpg')">
+    <img src="images/domaine-sainte-anne---04.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---06.jpg')">
+    <img src="images/domaine-sainte-anne---06.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---13.jpg')">
+    <img src="images/domaine-sainte-anne---13.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item galerie-item--wide" onclick="ouvrirPhoto('images/domaine-sainte-anne---17.jpg')">
+    <img src="images/domaine-sainte-anne---17.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---21.jpg')">
+    <img src="images/domaine-sainte-anne---21.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item galerie-item--tall" onclick="ouvrirPhoto('images/domaine-sainte-anne---22.jpg')">
+    <img src="images/domaine-sainte-anne---22.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---39.jpg')">
+    <img src="images/domaine-sainte-anne---39.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---40-2.jpg')">
+    <img src="images/domaine-sainte-anne---40-2.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item galerie-item--wide" onclick="ouvrirPhoto('images/domaine-sainte-anne---49.jpg')">
+    <img src="images/domaine-sainte-anne---49.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item" onclick="ouvrirPhoto('images/domaine-sainte-anne---53.jpg')">
+    <img src="images/domaine-sainte-anne---53.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item" onclick="ouvrirPhoto('images/img_1746.jpg')">
+    <img src="images/img_1746.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+  <div class="galerie-item galerie-item--tall" onclick="ouvrirPhoto('images/img_2279.jpg')">
+    <img src="images/img_2279.jpg" alt="Domaine de Sainte Anne" />
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="fermerPhoto()">
+  <button class="lightbox-close" onclick="fermerPhoto()">&times;</button>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()" />
+</div>
+
+<footer>
+  <p>© 2025 SCEA Domaine de Sainte Anne — Marcorignan, Aude</p>
+</footer>
+
+<script>
+  function ouvrirPhoto(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function fermerPhoto() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') fermerPhoto(); });
+</script>
+
+</body>
+</html>
