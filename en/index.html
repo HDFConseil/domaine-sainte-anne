@@ -6,6 +6,52 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Domaine de Sainte Anne — Independent Winegrower in Marcorignan, Aude</title>
 <meta content="Domaine de Sainte Anne, independent winegrower in Marcorignan (Aude, France). Fresh, fruity and approachable IGP Pays d'Aude wines. Tasting, cellar tour, online ordering." name="description"/>
+
+<!-- SEO: canonical + hreflang -->
+<link rel="canonical" href="https://domainedesainteanne.fr/en/" />
+<link rel="alternate" hreflang="fr" href="https://domainedesainteanne.fr/" />
+<link rel="alternate" hreflang="en" href="https://domainedesainteanne.fr/en/" />
+<link rel="alternate" hreflang="x-default" href="https://domainedesainteanne.fr/" />
+
+<!-- SEO: Open Graph / social -->
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:site_name" content="Domaine de Sainte Anne" />
+<meta property="og:title" content="Domaine de Sainte Anne — Independent Winegrower in Marcorignan, Aude" />
+<meta property="og:description" content="Independent winegrower in Marcorignan (Aude, France). Fresh, fruity and approachable IGP Pays d'Aude wines. Tasting, cellar tour, online ordering." />
+<meta property="og:url" content="https://domainedesainteanne.fr/en/" />
+<meta property="og:image" content="https://domainedesainteanne.fr/images/accueil-vigne.jpeg" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- SEO: Schema.org structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Winery",
+  "name": "Domaine de Sainte Anne",
+  "url": "https://domainedesainteanne.fr/en/",
+  "image": "https://domainedesainteanne.fr/images/accueil-vigne.jpeg",
+  "telephone": "+33763721236",
+  "email": "domainedesainteanne@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "7 avenue de Narbonne",
+    "addressLocality": "Marcorignan",
+    "postalCode": "11120",
+    "addressRegion": "Aude",
+    "addressCountry": "FR"
+  },
+  "sameAs": [
+    "https://www.instagram.com/domainesteanne",
+    "https://www.facebook.com/p/SCEA-Domaine-de-Sainte-Anne-61558050779995/"
+  ],
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Wednesday","Friday"], "opens": "18:00", "closes": "19:30" }
+  ],
+  "priceRange": "€€"
+}
+</script>
+
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&amp;family=Jost:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
@@ -72,7 +118,7 @@
     .hero { position: relative; height: 100vh; min-height: 640px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .hero-bg { position: absolute; inset: 0; }
     .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
-    .hero-overlay { display: none; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(58,37,48,0.75) 0%, rgba(23,23,23,0.35) 50%, rgba(23,23,23,0.65) 100%); }
     .hero-content { position: relative; text-align: center; color: #fff; padding: 0 1.5rem; max-width: 820px; }
     .hero-eyebrow { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--or); margin-bottom: 1.5rem; font-weight: 400; }
     .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5.5vw, 5.8rem); font-weight: 400; line-height: 1.15; margin-bottom: 1.8rem; }
@@ -594,7 +640,7 @@
 <p class="vin-card-desc" data-lang="en">A structured yet elegant red, with aromas of dark fruits, liquorice and gentle spices. Full-bodied without heaviness, with a beautiful lingering finish.<br/><br/>Pairs well with: grilled meats, tagines, spiced dishes or aged cheeses.</p>
 </div>
 </a>
-<a class="vin-card vin-card--wide fade-up" href="https://domainedesainteanne.sumupstore.com/article/magnum-entre-deux-rouge-2025" rel="noopener" target="_blank">
+<a class="vin-card vin-card--wide fade-up" href="https://domainedesainteanne.sumupstore.com" rel="noopener" target="_blank">
 <div class="vin-img-wrap">
 <img alt="Magnum Entre Deux 2025" class="vin-card-img" src="../images/domaine-sainte-anne---40-2.jpg" style="object-position:center 65%;"/>
 </div>
@@ -752,7 +798,7 @@
 <div class="flip-container">
 <div class="flip-card" id="flip-4">
 <div class="flip-front">
-<a href="https://domainedesainteanne.sumupstore.com/article/magnum-entre-deux-rouge-2025" target="_blank">
+<a href="https://domainedesainteanne.sumupstore.com" target="_blank">
 <img alt="Magnum Entre Deux" class="flip-front-img" src="../images/domaine-sainte-anne---40-2.jpg" style="object-position:center 65%;"/>
 </a>
 <div class="flip-front-body" onclick="flipCard(4)">
@@ -773,8 +819,8 @@
 <div class="flip-back-actions">
 <button class="flip-back-retour" data-lang="fr" onclick="flipCard(4)">← Retour</button>
 <button class="flip-back-retour" data-lang="en" onclick="flipCard(4)">← Back</button>
-<a class="flip-back-btn" data-lang="fr" href="https://domainedesainteanne.sumupstore.com/article/magnum-entre-deux-rouge-2025" target="_blank">Commander →</a>
-<a class="flip-back-btn" data-lang="en" href="https://domainedesainteanne.sumupstore.com/article/magnum-entre-deux-rouge-2025" target="_blank">Order →</a>
+<a class="flip-back-btn" data-lang="fr" href="https://domainedesainteanne.sumupstore.com" target="_blank">Commander →</a>
+<a class="flip-back-btn" data-lang="en" href="https://domainedesainteanne.sumupstore.com" target="_blank">Order →</a>
 </div>
 </div>
 </div>
@@ -864,22 +910,22 @@
 <section class="galerie">
 <div class="galerie-grid">
 <div class="galerie-item galerie-item--tall">
-<img alt="Marselan bottle on grapes" src="../images/img_1746.jpg"/>
+<img alt="Taille de la vigne" src="../images/taille-vigne.jpeg"/>
 </div>
 <div class="galerie-item">
-<img alt="Grapes" src="../images/grappes-raisin.jpeg"/>
+<img alt="Grappes de raisin" src="../images/grappes-raisin.jpeg"/>
 </div>
 <div class="galerie-item">
-<img alt="Rosé being poured" src="../images/domaine-sainte-anne---21.jpg"/>
+<img alt="Apéro vins" src="../images/apero-vins.jpeg"/>
 </div>
 <div class="galerie-item">
-<img alt="Architectural detail" src="../images/domaine-sainte-anne---22.jpg"/>
+<img alt="Cuves en béton" src="../images/cuves-beton.jpeg"/>
 </div>
 <div class="galerie-item">
 <img alt="Cave bouteilles" src="../images/cave-bouteilles.jpeg"/>
 </div>
 <div class="galerie-item galerie-item--wide">
-<img alt="Wine tasting" src="../images/domaine-sainte-anne---04.jpg"/>
+<img alt="Dégustation au caveau" src="../images/degustation-caveau.jpeg"/>
 </div>
 </div>
 </section>
@@ -1018,7 +1064,7 @@
 </div>
 </div>
 <div class="footer-bottom">
-<p class="footer-legal">© 2025 SCEA Domaine de Sainte Anne &nbsp;·&nbsp; <a href="../mentions-legales.html" style="color:rgba(255,255,255,0.3);text-decoration:underline;">Legal notice</a> &nbsp;·&nbsp; <a href="../galerie.html" style="color:rgba(255,255,255,0.3);text-decoration:underline;">Photo gallery</a></p>
+<p class="footer-legal">© 2025 SCEA Domaine de Sainte Anne</p>
 <div class="footer-labels">
 <img alt="Vigneron Indépendant" src="../images/logo-vigneron-independant.jpg" style="height:48px;width:auto;border-radius:2px;"/>
 <img alt="Signé Pays Cathare" src="../images/logo-pays-cathare.jpg" style="height:48px;width:auto;border-radius:2px;"/>
