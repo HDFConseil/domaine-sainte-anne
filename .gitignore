@@ -1,0 +1,15 @@
+# Fichiers système macOS
+.DS_Store
+**/.DS_Store
+
+# Sauvegarde des images originales (non optimisées, ~24 Mo)
+images/_originals/
+
+# Documents de travail internes
+*.pages
+*.docx
+*.pdf
+etat-des-lieux-site.md
+
+# Photos brutes non intégrées au site
+wetransfer_photos-domaine_2026-07-02_1106/
