@@ -53,7 +53,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bordeaux: #61394a;
@@ -964,8 +963,8 @@
       </div>
     </div>
     <div style="text-align:center; margin-top:2rem;" class="fade-up">
-      <a href="actualites.html" style="display:inline-block; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--or); text-decoration:none; border-bottom:1px solid var(--or); padding-bottom:2px;" data-lang="fr">Voir toutes les actualités →</a>
-      <a href="actualites.html" style="display:none; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--or); text-decoration:none; border-bottom:1px solid var(--or); padding-bottom:2px;" data-lang="en">See all news →</a>
+      <a href="/actualites" style="display:inline-block; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--or); text-decoration:none; border-bottom:1px solid var(--or); padding-bottom:2px;" data-lang="fr">Voir toutes les actualités →</a>
+      <a href="/en/news" style="display:none; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--or); text-decoration:none; border-bottom:1px solid var(--or); padding-bottom:2px;" data-lang="en">See all news →</a>
     </div>
   </div>
 </section>
@@ -1100,47 +1099,47 @@
 </div>
 
 <script>
-  // SUPABASE — DERNIÈRE ACTUALITÉ
-  const SUPABASE_URL = 'https://ksifjyshjhjdsiinycci.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzaWZqeXNoamhqZHNpaW55Y2NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0Mjc5NTQsImV4cCI6MjA5NTAwMzk1NH0.pLXvzDImEOiTawDbEFv9_cXOgy_rTlcl6jJEf7P4kXc';
-  const { createClient } = window.supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+  // DERNIÈRE ACTUALITÉ — actualité du domaine ou article, servie par la fonction /api/actualites
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
 
   function formatDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
   function renderImages(a) {
-    const imgs = (a.images && a.images.length) ? a.images : (a.image_url ? [a.image_url] : []);
+    const imgs = (a.images || []).filter(u => /^https?:\/\/|^\//.test(u));
     if (!imgs.length) return '';
     if (imgs.length === 1) {
-      return `<img loading="lazy" src="${imgs[0]}" alt="${a.titre}" style="width:100%;max-height:260px;object-fit:cover;margin-bottom:1.25rem;" />`;
+      return `<img loading="lazy" src="${escapeHtml(imgs[0])}" alt="${escapeHtml(a.title)}" style="width:100%;max-height:260px;object-fit:cover;margin-bottom:1.25rem;" />`;
     }
     return `<div style="display:grid;grid-template-columns:repeat(${Math.min(imgs.length, 3)}, 1fr);gap:6px;margin-bottom:1.25rem;">
-      ${imgs.map(url => `<img loading="lazy" src="${url}" alt="${a.titre}" style="width:100%;height:150px;object-fit:cover;" />`).join('')}
+      ${imgs.map(url => `<img loading="lazy" src="${escapeHtml(url)}" alt="${escapeHtml(a.title)}" style="width:100%;height:150px;object-fit:cover;" />`).join('')}
     </div>`;
   }
 
   async function chargerDerniereActu() {
     const container = document.getElementById('derniere-actu');
-    const { data, error } = await db.from('actualites_sainte_anne')
-      .select('*').order('date', { ascending: false }).limit(1);
+    let a = null;
+    try {
+      const res = await fetch('/actualites/derniere.json');
+      if (res.ok) a = await res.json();
+    } catch (e) {}
 
-    if (error || !data || data.length === 0) {
+    if (!a) {
       container.innerHTML = '<div class="actu-placeholder"><p style="color:rgba(255,255,255,0.3);font-size:0.9rem;font-style:italic;">✦ Les actualités du domaine arrivent bientôt — événements, vendanges, soirées dégustation… ✦</p></div>';
       return;
     }
 
-    const a = data[0];
     container.innerHTML = `
-      <a href="actualites.html#actu-${a.id}" style="text-decoration:none;display:block;">
+      <a href="${escapeHtml(a.url)}" style="text-decoration:none;display:block;">
         <div class="actu-card" style="background:#1a1a1a;padding:2rem;border-left:3px solid var(--or);transition:background 0.2s;">
           ${renderImages(a)}
           <div class="actu-date">${formatDate(a.date)}</div>
-          <h3 class="actu-title" style="text-decoration:underline;text-decoration-color:rgba(201,168,76,0.4);text-underline-offset:4px;">${a.titre}</h3>
-          ${a.sous_titre ? `<p style="font-size:0.9rem;color:var(--or-light);margin-top:0.5rem;font-style:italic;">${a.sous_titre}</p>` : ''}
-          <p style="margin-top:1rem;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--or);">Lire l'actualité →</p>
+          <h3 class="actu-title" style="text-decoration:underline;text-decoration-color:rgba(201,168,76,0.4);text-underline-offset:4px;">${escapeHtml(a.title)}</h3>
+          ${a.subtitle ? `<p style="font-size:0.9rem;color:var(--or-light);margin-top:0.5rem;font-style:italic;">${escapeHtml(a.subtitle)}</p>` : ''}
+          <p style="margin-top:1rem;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--or);">${a.kind === 'article' ? "Lire l'article →" : "Lire l'actualité →"}</p>
         </div>
       </a>
     `;

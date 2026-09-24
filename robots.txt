@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://domainedesainteanne.fr/sitemap.xml
+Sitemap: https://domainedesainteanne.fr/actualites/sitemap.xml

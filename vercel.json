@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/actualites.html", "destination": "/actualites", "permanent": true },
+    { "source": "/actualites/", "destination": "/actualites", "permanent": true },
+    { "source": "/en/news/", "destination": "/en/news", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/actualites", "destination": "/api/actualites?lang=fr" },
+    { "source": "/actualites/sitemap.xml", "destination": "/api/actualites?view=sitemap" },
+    { "source": "/actualites/derniere.json", "destination": "/api/actualites?view=latest&lang=fr" },
+    { "source": "/actualites/articles.json", "destination": "/api/actualites?view=articles" },
+    { "source": "/actualites/:slug", "destination": "/api/actualites?lang=fr&slug=:slug" },
+    { "source": "/en/news", "destination": "/api/actualites?lang=en" },
+    { "source": "/en/news/latest.json", "destination": "/api/actualites?view=latest&lang=en" },
+    { "source": "/en/news/:slug", "destination": "/api/actualites?lang=en&slug=:slug" }
+  ]
+}

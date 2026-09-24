@@ -1,0 +1,11 @@
+{
+  "name": "domaine-sainte-anne",
+  "private": true,
+  "description": "Site du Domaine de Sainte Anne : pages statiques + fonction Vercel pour la rubrique Actualités",
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "markdown-it": "14.1.0"
+  }
+}
