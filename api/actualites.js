@@ -4,10 +4,11 @@
 //   /actualites/[slug], /en/news/[slug]    → article ou actualité du domaine (301 si ancien slug, 404 si inconnu)
 //   /actualites/sitemap.xml                → sitemap de la rubrique
 //   /actualites/derniere.json              → dernière publication, pour l'aperçu de la page d'accueil
-//   /api/actualites?view=admin-articles    → articles centraux bruts et corrections, pour admin.html (connexion requise)
-//   /api/actualites?view=admin-article     → un article central complet, pour l'écran de correction (connexion requise)
+//   /api/actualites?view=admin-articles    → articles centraux publiés, pour la liste de admin.html (connexion requise)
+//   POST /api/actualites?view=admin-edit-link {lang, slug}
+//                                           → lien de modification d'un article (page de validation du socle, connexion requise)
 
-const { loadArticles, resolveArticle, rawList, rawArticle, fetchActualites, adminUser, SourceError } = require('./_lib/sources');
+const { loadArticles, resolveArticle, editLink, fetchActualites, adminUser, SourceError } = require('./_lib/sources');
 const { renderList, renderArticle, renderActu, findActu, actuPath, renderSitemap, renderError, renderNotFound, latest, PREFIX } = require('./_lib/render');
 
 const CACHE = 'public, s-maxage=300, stale-while-revalidate=600';
@@ -41,19 +42,28 @@ async function articlesOrNothing(lang) {
   }
 }
 
+// Corps JSON d'un POST (Vercel le fournit déjà décodé dans req.body).
+function jsonBody(req) {
+  if (req.body && typeof req.body === 'object') return req.body;
+  try { return JSON.parse(req.body || '{}'); } catch { return {}; }
+}
+
 async function adminView(req, res, view) {
+  const json = (status, body) => send(res, status, 'application/json; charset=utf-8', JSON.stringify(body), 'no-store');
   const token = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
-  if (!(await adminUser(token))) {
-    return send(res, 401, 'application/json; charset=utf-8', JSON.stringify({ error: 'unauthorized' }), 'no-store');
+  if (!(await adminUser(token))) return json(401, { error: 'unauthorized' });
+
+  if (view === 'admin-articles') return json(200, await loadArticles());
+
+  // Lien de modification : il contient un jeton, donc ni cache, ni journal.
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(405, { error: 'method_not_allowed' });
   }
-  if (view === 'admin-articles') {
-    return send(res, 200, 'application/json; charset=utf-8', JSON.stringify(await rawList()), 'private, no-store');
-  }
-  const lang = req.query.lang === 'en' ? 'en' : 'fr';
-  const slug = String(req.query.slug || '');
-  const article = SLUG.test(slug) ? await rawArticle(lang, slug) : null;
-  if (!article) return send(res, 404, 'application/json; charset=utf-8', JSON.stringify({ error: 'not_found' }), 'no-store');
-  return send(res, 200, 'application/json; charset=utf-8', JSON.stringify(article), 'private, no-store');
+  const { lang, slug } = jsonBody(req);
+  if (!['fr', 'en'].includes(lang) || typeof slug !== 'string' || !SLUG.test(slug)) return json(400, { error: 'bad_request' });
+  const r = await editLink(lang, slug);
+  return json(r.status, r.body);
 }
 
 module.exports = async function handler(req, res) {
@@ -61,7 +71,7 @@ module.exports = async function handler(req, res) {
   const lang = req.query.lang === 'en' ? 'en' : 'fr';
 
   try {
-    if (view === 'admin-articles' || view === 'admin-article') return await adminView(req, res, view);
+    if (view === 'admin-articles' || view === 'admin-edit-link') return await adminView(req, res, view);
 
     if (view === 'sitemap') {
       // Pas de version dégradée : un sitemap amputé ferait croire à Google que des articles ont disparu.

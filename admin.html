@@ -86,20 +86,10 @@
     .empty-state { text-align: center; padding: 3rem; color: #bbb; font-style: italic; font-size: 0.9rem; }
     .loading { text-align: center; padding: 2rem; color: #999; font-size: 0.9rem; }
 
-    /* ARTICLES (base centrale + corrections locales) */
+    /* ARTICLES (base centrale) */
     .badge { display: inline-block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; margin-left: 6px; vertical-align: 2px; }
     .badge-lang { background: var(--creme); color: var(--bordeaux); }
-    .badge-corrige { background: #e8f3ec; color: #1f6b3a; }
-    .badge-alerte { background: #fbf0e3; color: #9a4a07; }
     .notice { background: #fff; border-left: 3px solid var(--or); padding: 1rem 1.25rem; font-size: 0.88rem; color: #666; line-height: 1.6; max-width: 800px; margin-bottom: 1.5rem; }
-    .notice.alerte { border-left-color: #9a4a07; background: #fbf0e3; color: #6b3a0c; }
-    .form-group .aide { font-size: 0.78rem; color: #999; margin-top: 5px; }
-    .form-group textarea.corps { min-height: 420px; font-family: ui-monospace, Menlo, monospace; font-size: 0.85rem; line-height: 1.6; }
-    .faq-row { border: 1px solid #eee; padding: 0.75rem; margin-bottom: 0.5rem; display: grid; gap: 0.5rem; }
-    .faq-row textarea { min-height: 70px !important; }
-    .faq-row .btn-delete { justify-self: end; }
-    .btn-secondaire { background: none; border: 1px solid #ccc; color: #777; padding: 10px 18px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
-    .btn-secondaire:hover { border-color: var(--bordeaux); color: var(--bordeaux); }
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
@@ -214,66 +204,10 @@
         <h2>Articles</h2>
         <p>Articles rédigés et validés via la chaîne de publication. Ils apparaissent avec vos actualités sur le site.</p>
       </div>
-      <div class="notice">Vous pouvez corriger un article publié : votre correction s'affiche sur le site dans les 5 minutes, et Google est prévenu par la date de modification. Elle reste enregistrée sur le site du domaine ; la version d'origine n'est pas modifiée et reste restaurable.</div>
+      <div class="notice">« Modifier » ouvre l'article dans un nouvel onglet. Vos modifications sont enregistrées au fur et à mesure. Elles apparaissent sur le site quelques minutes après que vous avez cliqué sur « Publier mes modifications ».</div>
+      <p class="error-msg" id="articles-error" style="display:none;"></p>
       <div class="actu-list" id="articles-list">
         <div class="loading">Chargement...</div>
-      </div>
-    </div>
-
-    <!-- CORRECTION D'UN ARTICLE -->
-    <div id="section-article-edit" style="display:none;">
-      <div class="admin-header">
-        <h2>Corriger l'article</h2>
-        <p id="art-edit-sous-titre"></p>
-      </div>
-      <div class="notice alerte" id="art-alerte" style="display:none;"></div>
-      <div class="form-card">
-        <div class="form-group">
-          <label for="art-title">Titre *</label>
-          <input type="text" id="art-title" />
-        </div>
-        <div class="form-group">
-          <label for="art-excerpt">Chapô (résumé affiché dans la liste)</label>
-          <textarea id="art-excerpt" maxlength="200" style="min-height:80px;"></textarea>
-          <p class="aide">200 caractères maximum.</p>
-        </div>
-        <div class="form-group">
-          <label for="art-body">Texte de l'article</label>
-          <textarea id="art-body" class="corps"></textarea>
-          <p class="aide">Mise en forme : <code>## Intertitre</code>, <code>### Sous-partie</code>, <code>**gras**</code>, <code>*italique*</code>, <code>- liste</code>, <code>[texte du lien](https://…)</code>. Laissez une ligne vide entre deux paragraphes.</p>
-        </div>
-        <div class="form-group">
-          <label>Questions fréquentes</label>
-          <div id="art-faq"></div>
-          <button type="button" class="btn-secondaire" onclick="ajouterQuestion()">+ Ajouter une question</button>
-        </div>
-        <div class="form-group">
-          <label for="art-cover-file">Image de couverture</label>
-          <div id="art-cover-preview" style="margin-bottom:0.75rem;"></div>
-          <input type="file" id="art-cover-file" accept="image/*" style="background:#fff;padding:8px;" />
-        </div>
-        <div class="form-group">
-          <label for="art-cover-alt">Description de l'image</label>
-          <input type="text" id="art-cover-alt" />
-          <p class="aide">Décrit l'image pour les personnes malvoyantes et pour Google.</p>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="art-meta-title">Titre pour Google</label>
-            <input type="text" id="art-meta-title" maxlength="60" />
-            <p class="aide">60 caractères maximum.</p>
-          </div>
-          <div class="form-group">
-            <label for="art-meta-description">Description pour Google</label>
-            <textarea id="art-meta-description" style="min-height:80px;"></textarea>
-            <p class="aide">Entre 140 et 160 caractères idéalement.</p>
-          </div>
-        </div>
-        <p class="aide" style="font-size:0.8rem;color:#999;margin-bottom:1.5rem;">L'adresse de l'article (<span id="art-slug"></span>) ne peut pas être modifiée ici.</p>
-        <button class="btn-submit" id="btn-art-enregistrer" onclick="enregistrerCorrection()">Enregistrer la correction</button>
-        <button type="button" class="btn-secondaire" style="margin-left:10px;padding:13px 24px;" onclick="showSection('articles')">Annuler</button>
-        <p class="success-msg" id="art-success" style="display:none;"></p>
-        <p class="error-msg" id="art-error" style="display:none;"></p>
       </div>
     </div>
 
@@ -326,10 +260,9 @@
     document.getElementById('section-nouvelle').style.display = section === 'nouvelle' ? 'block' : 'none';
     document.getElementById('section-liste').style.display = section === 'liste' ? 'block' : 'none';
     document.getElementById('section-articles').style.display = section === 'articles' ? 'block' : 'none';
-    document.getElementById('section-article-edit').style.display = section === 'article-edit' ? 'block' : 'none';
     document.getElementById('nav-nouvelle').classList.toggle('active', section === 'nouvelle');
     document.getElementById('nav-liste').classList.toggle('active', section === 'liste');
-    document.getElementById('nav-articles').classList.toggle('active', section === 'articles' || section === 'article-edit');
+    document.getElementById('nav-articles').classList.toggle('active', section === 'articles');
     if (section === 'liste') chargerActualites();
     if (section === 'articles') chargerArticles();
   }
@@ -592,15 +525,11 @@
   }
 
   // ====== ARTICLES ======
-  // Les articles viennent de la base centrale (lecture seule, via /api/actualites?view=admin-…,
+  // Les articles viennent de la base centrale (lecture via /api/actualites?view=admin-articles,
   // réservé aux comptes connectés : le secret du site reste côté serveur).
-  // Une correction est enregistrée dans la table sainte_anne_article_corrections de notre base ;
-  // le site l'applique par-dessus la version centrale. Seuls les champs modifiés sont stockés.
-  const CHAMPS_CORRIGEABLES = ['title', 'meta_title', 'meta_description', 'excerpt', 'body_markdown', 'faq', 'cover_image_url', 'cover_image_alt'];
+  // Pour modifier un article, le serveur demande un lien de modification à la base centrale
+  // (valable 24 h) et on l'ouvre dans un nouvel onglet : le texte n'est jamais modifié sur le site.
   let articlesCache = [];
-  let correctionsCache = new Map();
-  let articleEnCours = null;
-  let nouvelleCouverture = null;
 
   function esc(v) {
     return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -610,232 +539,73 @@
     return (a.lang === 'en' ? '/en/news/' : '/actualites/') + a.slug;
   }
 
-  // Photo de couverture de la version centrale (champ images, role "cover").
-  function couverture(a) {
-    return (a.images || []).find(i => i && i.role === 'cover') || {};
-  }
-  // Valeur d'origine d'un champ corrigeable.
-  function origine(a, champ) {
-    if (champ === 'cover_image_url') return couverture(a).url || '';
-    if (champ === 'cover_image_alt') return couverture(a).alt || '';
-    return a[champ];
-  }
-
-  async function appelAdmin(params) {
+  async function appelAdmin(params, body) {
     const { data } = await db.auth.getSession();
     const token = data.session ? data.session.access_token : '';
-    const res = await fetch('/api/actualites?' + new URLSearchParams(params), {
-      headers: { Authorization: 'Bearer ' + token }, cache: 'no-store',
-    });
-    if (!res.ok) throw new Error('articles ' + res.status);
-    return res.json();
-  }
-
-  // La base centrale a-t-elle modifié l'article après notre correction ?
-  function correctionDepassee(a, c) {
-    return c && new Date(a.updated_at) > new Date(c.base_updated_at);
+    const init = { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' };
+    if (body) {
+      init.method = 'POST';
+      init.headers['Content-Type'] = 'application/json';
+      init.body = JSON.stringify(body);
+    }
+    const res = await fetch('/api/actualites?' + new URLSearchParams(params), init);
+    const json = await res.json().catch(() => ({}));
+    return { status: res.status, body: json };
   }
 
   async function chargerArticles() {
     const liste = document.getElementById('articles-list');
+    document.getElementById('articles-error').style.display = 'none';
     liste.innerHTML = '<div class="loading">Chargement...</div>';
-    try {
-      const [liste, corr] = await Promise.all([
-        appelAdmin({ view: 'admin-articles' }),
-        db.from('sainte_anne_article_corrections').select('*'),
-      ]);
-      if (corr.error) throw corr.error;
-      articlesCache = liste;
-      correctionsCache = new Map(corr.data.map(c => [c.article_id, c]));
-    } catch (e) {
+    const r = await appelAdmin({ view: 'admin-articles' });
+    if (r.status !== 200 || !Array.isArray(r.body)) {
       liste.innerHTML = '<div class="empty-state">Impossible de charger les articles pour le moment. Réessayez dans quelques minutes.</div>';
       return;
     }
+    articlesCache = r.body;
     if (!articlesCache.length) {
       liste.innerHTML = '<div class="empty-state">Aucun article publié pour le moment.</div>';
       return;
     }
-    liste.innerHTML = articlesCache.map(a => {
-      const c = correctionsCache.get(a.id);
-      const titre = (c && c.title) || a.title;
-      return `
+    liste.innerHTML = articlesCache.map((a, i) => `
       <div class="actu-item">
         <div class="actu-item-info">
           <div class="actu-item-date">${esc(formatDate(a.published_at))}
             <span class="badge badge-lang">${a.lang === 'en' ? 'EN' : 'FR'}</span>
-            ${c ? '<span class="badge badge-corrige">Corrigé</span>' : ''}
-            ${correctionDepassee(a, c) ? '<span class="badge badge-alerte">À vérifier</span>' : ''}
           </div>
-          <div class="actu-item-titre">${esc(titre)}</div>
-          ${a.excerpt ? `<div class="actu-item-sous-titre">${esc((c && c.excerpt) || a.excerpt)}</div>` : ''}
+          <div class="actu-item-titre">${esc(a.title)}</div>
+          ${a.excerpt ? `<div class="actu-item-sous-titre">${esc(a.excerpt)}</div>` : ''}
         </div>
         <div class="actu-item-actions">
           <a class="btn-share" style="text-decoration:none;" href="${esc(cheminArticle(a))}" target="_blank" rel="noopener">Voir</a>
-          <button class="btn-edit" onclick="modifierArticle('${esc(a.id)}')">Corriger</button>
-          ${c ? `<button class="btn-delete" onclick="annulerCorrection('${esc(a.id)}')">Revenir à l'original</button>` : ''}
+          <button class="btn-edit" onclick="modifierArticle(${i}, this)">Modifier</button>
         </div>
-      </div>`;
-    }).join('');
+      </div>`).join('');
   }
 
-  function ajouterQuestion(q = '', r = '') {
-    const row = document.createElement('div');
-    row.className = 'faq-row';
-    row.innerHTML = `<input type="text" placeholder="Question" class="faq-q" />
-      <textarea placeholder="Réponse" class="faq-r"></textarea>
-      <button type="button" class="btn-delete" onclick="this.parentElement.remove()">Retirer</button>`;
-    row.querySelector('.faq-q').value = q;
-    row.querySelector('.faq-r').value = r;
-    document.getElementById('art-faq').appendChild(row);
-  }
+  const ERREURS_MODIFICATION = {
+    409: "Une modification vient d'être validée : elle sera en ligne dans quelques minutes.",
+    403: "La modification des articles n'est pas encore activée.",
+  };
 
-  function afficherCouverture(url, alt) {
-    document.getElementById('art-cover-preview').innerHTML = url
-      ? `<img src="${esc(url)}" alt="${esc(alt)}" style="max-width:320px;max-height:180px;object-fit:cover;display:block;" />`
-      : '<p class="aide">Aucune image.</p>';
-  }
-
-  async function modifierArticle(id) {
-    const resume = articlesCache.find(x => x.id === id);
-    if (!resume) return;
-    // La liste ne contient pas le texte : on charge l'article complet.
-    let a;
-    try {
-      a = await appelAdmin({ view: 'admin-article', lang: resume.lang, slug: resume.slug });
-    } catch (e) {
-      alert("Impossible d'ouvrir cet article pour le moment. Réessayez dans quelques minutes.");
+  async function modifierArticle(i, btn) {
+    const a = articlesCache[i];
+    if (!a) return;
+    const erreur = document.getElementById('articles-error');
+    erreur.style.display = 'none';
+    // Onglet ouvert AVANT l'appel : ouvert après, il serait bloqué par le navigateur.
+    const w = window.open('', '_blank');
+    btn.disabled = true;
+    const r = await appelAdmin({ view: 'admin-edit-link' }, { lang: a.lang, slug: a.slug })
+      .catch(() => ({ status: 0, body: {} }));
+    btn.disabled = false;
+    if (r.status === 200 && r.body.url) {
+      if (w) w.location = r.body.url; else window.location.href = r.body.url;
       return;
     }
-    const c = correctionsCache.get(id) || {};
-    // Valeur affichée : la correction si elle existe, sinon la version centrale.
-    const val = champ => (c[champ] !== null && c[champ] !== undefined) ? c[champ] : origine(a, champ);
-    articleEnCours = a;
-    nouvelleCouverture = null;
-
-    document.getElementById('art-edit-sous-titre').textContent =
-      `${a.lang === 'en' ? 'Version anglaise' : 'Version française'} · publié le ${formatDate(a.published_at)}`;
-    document.getElementById('art-slug').textContent = cheminArticle(a);
-    document.getElementById('art-title').value = val('title') || '';
-    document.getElementById('art-excerpt').value = val('excerpt') || '';
-    document.getElementById('art-body').value = val('body_markdown') || '';
-    document.getElementById('art-meta-title').value = val('meta_title') || '';
-    document.getElementById('art-meta-description').value = val('meta_description') || '';
-    document.getElementById('art-cover-alt').value = val('cover_image_alt') || '';
-    document.getElementById('art-cover-file').value = '';
-    afficherCouverture(val('cover_image_url'), val('cover_image_alt'));
-    document.getElementById('art-faq').innerHTML = '';
-    (val('faq') || []).forEach(q => ajouterQuestion(q.question, q.answer));
-
-    const alerte = document.getElementById('art-alerte');
-    if (correctionDepassee(a, correctionsCache.get(id))) {
-      alerte.innerHTML = `La version d'origine de cet article a été mise à jour le ${esc(formatDate(a.updated_at))}, après votre correction. Votre correction est toujours affichée sur le site. Vérifiez-la, ou cliquez sur « Revenir à l'original » dans la liste pour afficher la nouvelle version.`;
-      alerte.style.display = 'block';
-    } else {
-      alerte.style.display = 'none';
-    }
-    document.getElementById('art-success').style.display = 'none';
-    document.getElementById('art-error').style.display = 'none';
-    showSection('article-edit');
-    window.scrollTo(0, 0);
-  }
-
-  document.addEventListener('change', e => {
-    if (e.target.id !== 'art-cover-file') return;
-    const file = e.target.files[0];
-    nouvelleCouverture = file || null;
-    if (file) afficherCouverture(URL.createObjectURL(file), '');
-  });
-
-  function erreurArticle(msg) {
-    const el = document.getElementById('art-error');
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-
-  async function enregistrerCorrection() {
-    const a = articleEnCours;
-    if (!a) return;
-    document.getElementById('art-success').style.display = 'none';
-    document.getElementById('art-error').style.display = 'none';
-
-    const saisie = {
-      title: document.getElementById('art-title').value.trim(),
-      excerpt: document.getElementById('art-excerpt').value.trim(),
-      body_markdown: document.getElementById('art-body').value.replace(/\s+$/, ''),
-      meta_title: document.getElementById('art-meta-title').value.trim(),
-      meta_description: document.getElementById('art-meta-description').value.trim(),
-      cover_image_alt: document.getElementById('art-cover-alt').value.trim(),
-      faq: [...document.querySelectorAll('#art-faq .faq-row')]
-        .map(r => ({ question: r.querySelector('.faq-q').value.trim(), answer: r.querySelector('.faq-r').value.trim() }))
-        .filter(q => q.question && q.answer),
-    };
-    if (!saisie.title) return erreurArticle('Le titre est obligatoire.');
-    if (/^#\s/m.test(saisie.body_markdown)) return erreurArticle("Le texte ne doit pas contenir de titre principal (ligne commençant par « # »). Utilisez « ## » pour les intertitres.");
-
-    const btn = document.getElementById('btn-art-enregistrer');
-    btn.disabled = true;
-    btn.textContent = 'Enregistrement...';
-
-    const precedente = correctionsCache.get(a.id) || {};
-    let coverUrl = precedente.cover_image_url || null;
-    if (nouvelleCouverture) {
-      const ext = nouvelleCouverture.name.split('.').pop();
-      const fileName = `articles/${a.id}-${Date.now()}.${ext}`;
-      const { error: upErr } = await db.storage.from('actualites-sainte-anne-images')
-        .upload(fileName, nouvelleCouverture, { cacheControl: '3600', upsert: false });
-      if (upErr) {
-        btn.disabled = false; btn.textContent = 'Enregistrer la correction';
-        return erreurArticle("L'image n'a pas pu être envoyée : " + upErr.message);
-      }
-      coverUrl = db.storage.from('actualites-sainte-anne-images').getPublicUrl(fileName).data.publicUrl;
-    }
-    saisie.cover_image_url = coverUrl || couverture(a).url || '';
-
-    // On ne stocke que ce qui diffère de la version centrale : les autres champs suivront ses mises à jour.
-    // updated_at : le site s'en sert comme date de modification (sitemap, données structurées pour Google).
-    const row = { article_id: a.id, base_updated_at: a.updated_at, updated_at: new Date().toISOString() };
-    let modifie = false;
-    for (const champ of CHAMPS_CORRIGEABLES) {
-      const avant = champ === 'faq' ? JSON.stringify(a.faq || []) : (origine(a, champ) || '');
-      const nouveau = champ === 'faq' ? JSON.stringify(saisie.faq) : (saisie[champ] || '');
-      if (nouveau !== avant) {
-        row[champ] = champ === 'faq' ? saisie.faq : (saisie[champ] || null);
-        modifie = true;
-      } else {
-        row[champ] = null;
-      }
-    }
-
-    let error;
-    if (modifie) {
-      ({ error } = await db.from('sainte_anne_article_corrections').upsert(row, { onConflict: 'article_id' }));
-    } else if (correctionsCache.has(a.id)) {
-      // Tout est revenu à l'identique : on supprime la correction.
-      ({ error } = await db.from('sainte_anne_article_corrections').delete().eq('article_id', a.id));
-    }
-
-    btn.disabled = false;
-    btn.textContent = 'Enregistrer la correction';
-    if (error) {
-      return erreurArticle(/row-level security|permission/i.test(error.message)
-        ? "Votre compte n'est pas autorisé à corriger les articles. Contactez votre prestataire."
-        : 'Erreur : ' + error.message);
-    }
-    const ok = document.getElementById('art-success');
-    ok.textContent = modifie
-      ? '✅ Correction enregistrée. Elle apparaîtra sur le site dans les 5 minutes.'
-      : 'Aucune différence avec la version d\'origine : rien à enregistrer.';
-    ok.style.display = 'block';
-    document.getElementById('art-alerte').style.display = 'none';
-    const { data } = await db.from('sainte_anne_article_corrections').select('*');
-    if (data) correctionsCache = new Map(data.map(c => [c.article_id, c]));
-  }
-
-  async function annulerCorrection(id) {
-    if (!confirm("Supprimer votre correction et afficher à nouveau la version d'origine de l'article ?")) return;
-    const { error } = await db.from('sainte_anne_article_corrections').delete().eq('article_id', id);
-    if (error) { alert('Erreur : ' + error.message); return; }
-    chargerArticles();
+    if (w) w.close();
+    erreur.textContent = ERREURS_MODIFICATION[r.status] || 'Service indisponible, réessayez dans un instant.';
+    erreur.style.display = 'block';
   }
 </script>
 </body>

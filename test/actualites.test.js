@@ -17,7 +17,7 @@ const ACTU = {
 // État simulé, remis à zéro avant chaque test.
 let state;
 function reset(env = {}) {
-  state = { corrections: [], central: 'ok', centralCalls: [] };
+  state = { central: 'ok', centralCalls: [], editStatus: 200 };
   delete process.env.ARTICLES_MOCK;
   delete process.env.ARTICLES_ENDPOINT;
   delete process.env.ARTICLES_SITE_SECRET;
@@ -34,6 +34,12 @@ global.fetch = async (url, init = {}) => {
     if (state.central !== 'ok') return json({ error: 'unauthorized' }, 401);
     if (init.headers['X-Site-Secret'] !== SECRET) return json({ error: 'unauthorized' }, 401);
     const op = u.searchParams.get('op');
+    if (op === 'edit_link') {
+      assert.equal(init.method, 'POST');
+      state.editBody = JSON.parse(init.body);
+      if (state.editStatus !== 200) return json({ error: 'x' }, state.editStatus);
+      return json({ url: 'https://validation-articles-hdf.netlify.app/#t=JETON-SECRET', expires_at: '2026-09-26T10:00:00Z', title: 'Titre' });
+    }
     const lang = u.searchParams.get('lang');
     if (op === 'list') {
       return json(MOCK.filter(a => !lang || a.lang === lang).map(({ body_markdown, faq, meta_title, meta_description, previous_slugs, ...rest }) => rest));
@@ -47,23 +53,19 @@ global.fetch = async (url, init = {}) => {
     return json(moved ? { article: null, moved_to: moved.slug } : { article: null });
   }
   if (u.pathname === '/rest/v1/actualites_sainte_anne') return json([ACTU]);
-  if (u.pathname === '/rest/v1/sainte_anne_article_corrections') {
-    const id = (u.searchParams.get('article_id') || '').replace(/^eq\./, '');
-    return json(id ? state.corrections.filter(c => c.article_id === id) : state.corrections);
-  }
   if (u.pathname === '/auth/v1/user') {
     return init.headers.Authorization === 'Bearer jeton-valide' ? json({ id: 'u1' }) : json({ error: 'bad' }, 401);
   }
   throw new Error('appel inattendu : ' + url);
 };
 
-async function call(query, headers = {}) {
+async function call(query, headers = {}, method = 'GET', body = undefined) {
   const res = {
     statusCode: 200, headers: {}, body: '',
     setHeader(k, v) { this.headers[k.toLowerCase()] = v; },
     end(b = '') { this.body = String(b); },
   };
-  await handler({ query, headers }, res);
+  await handler({ query, headers, method, body }, res);
   return res;
 }
 
@@ -145,33 +147,61 @@ test('secret refusé : liste et accueil en ligne sans les articles (cache court)
   assert.equal(page.headers['cache-control'], 'no-store');
 });
 
-test('correction locale : appliquée à la liste, à la page et à la date de modification', async () => {
-  reset({ ARTICLES_ENDPOINT: ENDPOINT, ARTICLES_SITE_SECRET: SECRET });
-  state.corrections = [{
-    article_id: MOCK[0].id, base_updated_at: MOCK[0].updated_at, updated_at: '2026-09-22T10:00:00Z',
-    title: 'Cassoulet : nos accords corrigés', meta_title: null, meta_description: null, excerpt: null,
-    body_markdown: '## Texte corrigé', faq: null,
-    cover_image_url: 'https://ksifjyshjhjdsiinycci.supabase.co/storage/v1/object/public/actualites-sainte-anne-images/articles/x.jpg',
-    cover_image_alt: 'Nouvelle photo',
-  }];
-  const list = await call({ lang: 'fr' });
-  assert.match(list.body, /Cassoulet : nos accords corrigés/);
-  const page = await call({ lang: 'fr', slug: 'quels-vins-servir-avec-un-cassoulet' });
-  assert.match(page.body, /Texte corrigé/);
-  assert.match(page.body, /<img src="[^"]*articles\/x\.jpg" alt="Nouvelle photo" class="article-cover"/, 'photo remplacée, sans dimensions');
-  assert.match(page.body, /"dateModified":"2026-09-22T10:00:00Z"/);
-  const sitemap = await call({ view: 'sitemap' });
-  assert.match(sitemap.body, /quels-vins-servir-avec-un-cassoulet<\/loc>.*<lastmod>2026-09-22T10:00:00.000Z<\/lastmod>/);
-});
-
-test('admin : articles bruts réservés aux comptes connectés', async () => {
+test('admin : liste des articles réservée aux comptes connectés', async () => {
   reset({ ARTICLES_ENDPOINT: ENDPOINT, ARTICLES_SITE_SECRET: SECRET });
   assert.equal((await call({ view: 'admin-articles' })).statusCode, 401);
   assert.equal((await call({ view: 'admin-articles' }, { authorization: 'Bearer faux' })).statusCode, 401);
   const list = await call({ view: 'admin-articles' }, { authorization: 'Bearer jeton-valide' });
   assert.equal(list.statusCode, 200);
-  assert.equal(list.headers['cache-control'], 'private, no-store');
+  assert.equal(list.headers['cache-control'], 'no-store');
   assert.equal(JSON.parse(list.body).length, 2);
-  const one = await call({ view: 'admin-article', lang: 'fr', slug: 'quels-vins-servir-avec-un-cassoulet' }, { authorization: 'Bearer jeton-valide' });
-  assert.equal(JSON.parse(one.body).body_markdown, MOCK[0].body_markdown);
+});
+
+test('admin : lien de modification demandé à la base centrale, jamais mis en cache ni journalisé', async () => {
+  reset({ ARTICLES_ENDPOINT: ENDPOINT, ARTICLES_SITE_SECRET: SECRET });
+  const auth = { authorization: 'Bearer jeton-valide' };
+  const logs = [];
+  const orig = [console.log, console.error, console.warn];
+  console.log = console.error = console.warn = (...a) => logs.push(a.join(' '));
+  try {
+    assert.equal((await call({ view: 'admin-edit-link' }, {}, 'POST', { lang: 'fr', slug: 'x' })).statusCode, 401);
+    assert.equal((await call({ view: 'admin-edit-link' }, auth, 'GET')).statusCode, 405);
+    assert.equal((await call({ view: 'admin-edit-link' }, auth, 'POST', { lang: 'de', slug: 'x' })).statusCode, 400);
+    assert.equal((await call({ view: 'admin-edit-link' }, auth, 'POST', { lang: 'fr', slug: '../x' })).statusCode, 400);
+
+    const ok = await call({ view: 'admin-edit-link' }, auth, 'POST', JSON.stringify({ lang: 'fr', slug: 'quels-vins-servir-avec-un-cassoulet' }));
+    assert.equal(ok.statusCode, 200);
+    assert.equal(ok.headers['cache-control'], 'no-store');
+    assert.match(JSON.parse(ok.body).url, /#t=JETON-SECRET$/);
+    assert.deepEqual(state.editBody, { lang: 'fr', slug: 'quels-vins-servir-avec-un-cassoulet' });
+    const call0 = state.centralCalls.find(c => c.url.searchParams.get('op') === 'edit_link');
+    assert.equal(call0.headers['X-Site-Secret'], SECRET);
+
+    for (const code of [403, 404, 409, 429, 500]) {
+      state.editStatus = code;
+      const r = await call({ view: 'admin-edit-link' }, auth, 'POST', { lang: 'fr', slug: 'quels-vins-servir-avec-un-cassoulet' });
+      assert.equal(r.statusCode, code);
+      assert.equal(r.headers['cache-control'], 'no-store');
+    }
+  } finally {
+    [console.log, console.error, console.warn] = orig;
+  }
+  assert.ok(!logs.some(l => l.includes('JETON-SECRET')), 'jeton absent des journaux');
+});
+
+test('admin : sans branchement, la modification répond « non activée »', async () => {
+  reset();
+  const r = await call({ view: 'admin-edit-link' }, { authorization: 'Bearer jeton-valide' }, 'POST', { lang: 'fr', slug: 'un-article' });
+  assert.equal(r.statusCode, 403);
+});
+
+test('plus aucune trace des corrections locales dans le dépôt', () => {
+  const { execSync } = require('node:child_process');
+  let out = '';
+  try {
+    out = execSync("git grep -n -e sainte_anne_article_corrections -e applyCorrection -- ':!test/'", { cwd: __dirname + '/..', encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+  } catch (e) {
+    if (e.status !== 1) throw e; // 1 = aucune occurrence
+  }
+  assert.equal(out.trim(), '');
 });
