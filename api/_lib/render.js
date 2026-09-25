@@ -1,12 +1,12 @@
 // Rendu HTML de la rubrique Actualités (liste mélangée, pages articles, sitemap).
 // Habillage repris de l'ancienne page actualites.html : garder les deux en cohérence avec le site.
 
-const MarkdownIt = require('markdown-it');
-
-// HTML brut désactivé ; markdown-it refuse déjà les liens javascript:, vbscript:, file: et data: (hors images).
-const md = new MarkdownIt({ html: false, linkify: false, typographer: true });
+// Markdown des articles : rendu commun du socle (HTML brut et liens dangereux retirés,
+// images du corps gardées seulement si elles font partie des photos de l'article).
+const { renderMarkdown } = require('@hdf/blog-core');
 
 const ORIGIN = 'https://domainedesainteanne.fr';
+const HOST = new URL(ORIGIN).host;
 const SITE_NAME = 'Domaine de Sainte Anne';
 
 const PREFIX = {
@@ -58,6 +58,33 @@ function formatDate(value, lang) {
 }
 
 const articlePath = a => `${PREFIX[a.lang]}/${a.slug}`;
+
+// Photo de couverture d'un article central (role "cover"), ou null.
+function coverOf(a) {
+  const cover = (a.images || []).find(i => i && i.role === 'cover');
+  return cover && safeUrl(cover.url) ? cover : null;
+}
+
+// Balise <img> d'une photo d'article, avec ses dimensions quand elles sont connues (évite les décalages de mise en page).
+function imgTag(img, attrs = '') {
+  const size = img.width && img.height ? ` width="${Number(img.width)}" height="${Number(img.height)}"` : '';
+  return `<img src="${esc(img.url)}" alt="${esc(img.alt || '')}"${size}${attrs} />`;
+}
+
+// Photo pour les données structurées : ImageObject si les dimensions sont connues.
+function ldImage(img) {
+  if (!img) return undefined;
+  const url = img.url.startsWith('/') ? ORIGIN + img.url : img.url;
+  return img.width && img.height ? { '@type': 'ImageObject', url, width: img.width, height: img.height } : url;
+}
+
+function breadcrumb(items) {
+  return jsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, item: ORIGIN + it.path })),
+  });
+}
 
 // Adresse d'une actualité du domaine : titre en slug + début de l'id, qui reste stable si le titre change.
 // Même calcul dans admin.html (bouton de partage Facebook) : garder les deux identiques.
@@ -204,9 +231,9 @@ function actuCard(a, lang) {
 
 function articleCard(a, lang) {
   const t = T[lang];
-  const cover = safeUrl(a.cover_image_url);
+  const cover = coverOf(a);
   return `<article class="actu-card actu-card--article">
-    ${cover ? `<a href="${esc(articlePath(a))}" tabindex="-1"><img class="actu-img" src="${esc(cover)}" alt="${esc(a.cover_image_alt || '')}" loading="lazy" /></a>` : ''}
+    ${cover ? `<a href="${esc(articlePath(a))}" tabindex="-1">${imgTag(cover, ' class="actu-img" loading="lazy" decoding="async"')}</a>` : ''}
     <div class="actu-card-date">${formatDate(a.published_at, lang)} · ${t.article}${a.reading_time_min ? ` · ${a.reading_time_min} ${t.min}` : ''}</div>
     <h2 class="actu-card-titre"><a href="${esc(articlePath(a))}">${esc(a.title)}</a></h2>
     ${a.excerpt ? `<p class="actu-card-texte">${esc(a.excerpt)}</p>` : ''}
@@ -252,18 +279,19 @@ function translationsOf(article, articles) {
   return articles.filter(a => a.translation_group_id === article.translation_group_id);
 }
 
-function renderArticle(article, articles) {
+// translations : autres langues du même article, [{ lang, slug }] (réponse du point d'accès).
+function renderArticle(article, translations = []) {
   const lang = article.lang;
   const t = T[lang];
   const path = articlePath(article);
-  const versions = translationsOf(article, articles);
+  const versions = [article, ...translations.filter(v => PREFIX[v.lang] && v.lang !== lang)];
   const alternates = versions.length > 1
     ? [
       ...versions.map(v => ({ lang: v.lang, path: articlePath(v) })),
       { lang: 'x-default', path: articlePath(versions.find(v => v.lang === 'fr') || article) },
     ]
     : [];
-  const cover = safeUrl(article.cover_image_url);
+  const cover = coverOf(article);
   const faq = Array.isArray(article.faq) ? article.faq.filter(q => q && q.question && q.answer) : [];
 
   const ld = [jsonLd({
@@ -271,7 +299,7 @@ function renderArticle(article, articles) {
     '@type': 'Article',
     headline: article.title,
     description: article.meta_description || article.excerpt || undefined,
-    image: cover || undefined,
+    image: ldImage(cover),
     datePublished: article.published_at,
     dateModified: article.updated_at,
     inLanguage: lang,
@@ -287,13 +315,19 @@ function renderArticle(article, articles) {
     }));
   }
 
+  ld.push(breadcrumb([
+    { name: SITE_NAME, path: t.home },
+    { name: lang === 'fr' ? 'Actualités' : 'News', path: PREFIX[lang] },
+    { name: article.title, path },
+  ]));
+
   return layout({
     lang,
     title: `${article.meta_title || article.title} — ${SITE_NAME}`,
     description: article.meta_description || article.excerpt || '',
     canonical: path,
     alternates,
-    ogImage: cover,
+    ogImage: cover && (cover.url.startsWith('/') ? ORIGIN + cover.url : cover.url),
     ogType: 'article',
     head: ld.join('\n  '),
     body: `<main class="article">
@@ -303,9 +337,9 @@ function renderArticle(article, articles) {
     <h1>${esc(article.title)}</h1>
     ${article.excerpt ? `<p class="article-chapo">${esc(article.excerpt)}</p>` : ''}
   </header>
-  ${cover ? `<img class="article-cover" src="${esc(cover)}" alt="${esc(article.cover_image_alt || '')}" />` : ''}
+  ${cover ? imgTag(cover, ' class="article-cover" fetchpriority="high"') : ''}
   <div class="article-body">
-${md.render(article.body_markdown || '')}
+${renderMarkdown(article.body_markdown || '', { host: HOST, images: article.images })}
   </div>
   ${faq.length ? `<section class="article-faq">
     <h2>${t.faq}</h2>
@@ -349,7 +383,11 @@ function renderActu(a) {
     canonical: path,
     ogImage: imgs[0],
     ogType: 'article',
-    head: ld,
+    head: ld + '\n  ' + breadcrumb([
+      { name: SITE_NAME, path: '/' },
+      { name: 'Actualités', path: PREFIX.fr },
+      { name: a.titre, path },
+    ]),
     body: `<main class="article">
   <a class="article-back" href="${PREFIX.fr}">${t.allNews}</a>
   <header class="article-header">
@@ -394,7 +432,8 @@ function latest(articles, actualites, lang) {
   if (!first) return null;
   if (first.kind === 'article') {
     const a = first.item;
-    return { kind: 'article', title: a.title, subtitle: a.excerpt, date: a.published_at, url: articlePath(a), images: a.cover_image_url ? [a.cover_image_url] : [] };
+    const cover = coverOf(a);
+    return { kind: 'article', title: a.title, subtitle: a.excerpt, date: a.published_at, url: articlePath(a), images: cover ? [cover.url] : [] };
   }
   const a = first.item;
   return { kind: 'actu', title: a.titre, subtitle: a.sous_titre, date: a.date, url: actuPath(a), images: actuImages(a) };
@@ -476,7 +515,8 @@ nav { background:var(--bordeaux); padding:0 2.5rem; display:flex; align-items:ce
 .article-body ul, .article-body ol { padding-left:1.4rem; }
 .article-body li + li { margin-top:0.4rem; }
 .article-body blockquote { border-left:3px solid var(--or); padding:0.25rem 0 0.25rem 1.25rem; font-style:italic; color:var(--bordeaux); }
-.article-body img { max-width:100%; }
+.article-body img { max-width:100%; height:auto; }
+.article-cover { height:auto; }
 .article-body--texte { white-space:pre-wrap; }
 .article-gallery { margin:2.5rem 0; }
 .article .actu-card-lien { margin-top:2rem; }

@@ -214,7 +214,7 @@
         <h2>Articles</h2>
         <p>Articles rédigés et validés via la chaîne de publication. Ils apparaissent avec vos actualités sur le site.</p>
       </div>
-      <div class="notice">Vous pouvez corriger un article publié : votre correction s'affiche sur le site dans les 5 minutes. Elle reste enregistrée sur le site du domaine ; la version d'origine n'est pas modifiée et reste restaurable.</div>
+      <div class="notice">Vous pouvez corriger un article publié : votre correction s'affiche sur le site dans les 5 minutes, et Google est prévenu par la date de modification. Elle reste enregistrée sur le site du domaine ; la version d'origine n'est pas modifiée et reste restaurable.</div>
       <div class="actu-list" id="articles-list">
         <div class="loading">Chargement...</div>
       </div>
@@ -592,7 +592,8 @@
   }
 
   // ====== ARTICLES ======
-  // Les articles viennent de la base centrale (lecture seule, via /actualites/articles.json).
+  // Les articles viennent de la base centrale (lecture seule, via /api/actualites?view=admin-…,
+  // réservé aux comptes connectés : le secret du site reste côté serveur).
   // Une correction est enregistrée dans la table sainte_anne_article_corrections de notre base ;
   // le site l'applique par-dessus la version centrale. Seuls les champs modifiés sont stockés.
   const CHAMPS_CORRIGEABLES = ['title', 'meta_title', 'meta_description', 'excerpt', 'body_markdown', 'faq', 'cover_image_url', 'cover_image_alt'];
@@ -609,6 +610,27 @@
     return (a.lang === 'en' ? '/en/news/' : '/actualites/') + a.slug;
   }
 
+  // Photo de couverture de la version centrale (champ images, role "cover").
+  function couverture(a) {
+    return (a.images || []).find(i => i && i.role === 'cover') || {};
+  }
+  // Valeur d'origine d'un champ corrigeable.
+  function origine(a, champ) {
+    if (champ === 'cover_image_url') return couverture(a).url || '';
+    if (champ === 'cover_image_alt') return couverture(a).alt || '';
+    return a[champ];
+  }
+
+  async function appelAdmin(params) {
+    const { data } = await db.auth.getSession();
+    const token = data.session ? data.session.access_token : '';
+    const res = await fetch('/api/actualites?' + new URLSearchParams(params), {
+      headers: { Authorization: 'Bearer ' + token }, cache: 'no-store',
+    });
+    if (!res.ok) throw new Error('articles ' + res.status);
+    return res.json();
+  }
+
   // La base centrale a-t-elle modifié l'article après notre correction ?
   function correctionDepassee(a, c) {
     return c && new Date(a.updated_at) > new Date(c.base_updated_at);
@@ -618,13 +640,12 @@
     const liste = document.getElementById('articles-list');
     liste.innerHTML = '<div class="loading">Chargement...</div>';
     try {
-      const [res, corr] = await Promise.all([
-        fetch('/actualites/articles.json', { cache: 'no-store' }),
+      const [liste, corr] = await Promise.all([
+        appelAdmin({ view: 'admin-articles' }),
         db.from('sainte_anne_article_corrections').select('*'),
       ]);
-      if (!res.ok) throw new Error('articles ' + res.status);
       if (corr.error) throw corr.error;
-      articlesCache = await res.json();
+      articlesCache = liste;
       correctionsCache = new Map(corr.data.map(c => [c.article_id, c]));
     } catch (e) {
       liste.innerHTML = '<div class="empty-state">Impossible de charger les articles pour le moment. Réessayez dans quelques minutes.</div>';
@@ -674,12 +695,20 @@
       : '<p class="aide">Aucune image.</p>';
   }
 
-  function modifierArticle(id) {
-    const a = articlesCache.find(x => x.id === id);
-    if (!a) return;
+  async function modifierArticle(id) {
+    const resume = articlesCache.find(x => x.id === id);
+    if (!resume) return;
+    // La liste ne contient pas le texte : on charge l'article complet.
+    let a;
+    try {
+      a = await appelAdmin({ view: 'admin-article', lang: resume.lang, slug: resume.slug });
+    } catch (e) {
+      alert("Impossible d'ouvrir cet article pour le moment. Réessayez dans quelques minutes.");
+      return;
+    }
     const c = correctionsCache.get(id) || {};
     // Valeur affichée : la correction si elle existe, sinon la version centrale.
-    const val = champ => (c[champ] !== null && c[champ] !== undefined) ? c[champ] : a[champ];
+    const val = champ => (c[champ] !== null && c[champ] !== undefined) ? c[champ] : origine(a, champ);
     articleEnCours = a;
     nouvelleCouverture = null;
 
@@ -760,15 +789,16 @@
       }
       coverUrl = db.storage.from('actualites-sainte-anne-images').getPublicUrl(fileName).data.publicUrl;
     }
-    saisie.cover_image_url = coverUrl || a.cover_image_url;
+    saisie.cover_image_url = coverUrl || couverture(a).url || '';
 
     // On ne stocke que ce qui diffère de la version centrale : les autres champs suivront ses mises à jour.
-    const row = { article_id: a.id, base_updated_at: a.updated_at };
+    // updated_at : le site s'en sert comme date de modification (sitemap, données structurées pour Google).
+    const row = { article_id: a.id, base_updated_at: a.updated_at, updated_at: new Date().toISOString() };
     let modifie = false;
     for (const champ of CHAMPS_CORRIGEABLES) {
-      const origine = champ === 'faq' ? JSON.stringify(a.faq || []) : (a[champ] || '');
+      const avant = champ === 'faq' ? JSON.stringify(a.faq || []) : (origine(a, champ) || '');
       const nouveau = champ === 'faq' ? JSON.stringify(saisie.faq) : (saisie[champ] || '');
-      if (nouveau !== origine) {
+      if (nouveau !== avant) {
         row[champ] = champ === 'faq' ? saisie.faq : (saisie[champ] || null);
         modifie = true;
       } else {

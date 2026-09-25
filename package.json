@@ -2,10 +2,16 @@
   "name": "domaine-sainte-anne",
   "private": true,
   "description": "Site du Domaine de Sainte Anne : pages statiques + fonction Vercel pour la rubrique Actualités",
+  "scripts": {
+    "test": "node --no-experimental-require-module -e \"require('./api/actualites')\" && node --test test/*.test.js"
+  },
   "engines": {
     "node": "24.x"
   },
   "dependencies": {
-    "markdown-it": "14.1.0"
+    "@hdf/blog-core": "file:vendor/hdf-blog-core-0.1.0.tgz"
+  },
+  "overrides": {
+    "sanitize-html": "2.17.5"
   }
 }

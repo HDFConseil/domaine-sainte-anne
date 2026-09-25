@@ -1,5 +1,14 @@
 // Articles fictifs, utilisés seulement avec ARTICLES_MOCK=1 (tests locaux ou déploiement de prévisualisation),
-// tant que la base centrale n'est pas branchée. Même forme que la vue published_articles.
+// tant que la base centrale n'est pas branchée. Même forme que les réponses du point d'accès site-articles.
+const COVER = {
+  position: 1, role: 'cover', url: 'https://domainedesainteanne.fr/images/accueil-vigne.jpeg',
+  alt: 'Les vignes du Domaine de Sainte Anne', width: 1200, height: 630,
+};
+const INLINE = {
+  position: 2, role: 'inline', url: 'https://domainedesainteanne.fr/images/cave-bouteilles.jpeg',
+  alt: 'Bouteilles dans la cave du domaine', width: 1200, height: 800,
+};
+
 module.exports = [
   {
     id: '00000000-0000-4000-8000-000000000001',
@@ -11,12 +20,11 @@ module.exports = [
     meta_title: 'Quel vin avec un cassoulet ? Nos accords',
     meta_description: "Rouge des Corbières, blanc de caractère : nos conseils pour accorder le cassoulet avec les vins du Domaine de Sainte Anne, à Marcorignan.",
     excerpt: "Le cassoulet appelle un vin qui a du corps sans écraser le plat. Nos accords, cuvée par cuvée.",
-    body_markdown: "## Un plat généreux, un vin structuré\n\nLe cassoulet est un plat riche. Il demande un vin avec de la **structure** et une belle fraîcheur.\n\n## Nos accords\n\n- Un rouge des Corbières, aux tanins fondus\n- Un rosé de gastronomie pour les tablées d'été\n\n> Servez le rouge autour de 16 °C.\n\nDécouvrez [nos vins](/#vins) ou [un lien piégé](javascript:alert(1)).",
+    body_markdown: `## Un plat généreux, un vin structuré\n\nLe cassoulet est un plat riche. Il demande un vin avec de la **structure** et une belle fraîcheur.\n\n![Nos bouteilles](${INLINE.url})\n\n## Nos accords\n\n- Un rouge des Corbières, aux tanins fondus\n- Un rosé de gastronomie pour les tablées d'été\n\n> Servez le rouge autour de 16 °C.\n\n![image inconnue](https://exemple.invalid/piege.jpg)\n\nDécouvrez [nos vins](/#vins) ou [un lien piégé](javascript:alert(1)).`,
     faq: [{ question: 'Rouge ou blanc avec un cassoulet ?', answer: 'Plutôt un rouge du Languedoc, structuré mais sans excès de boisé.' }],
     category: 'accords',
     tags: ['accords mets-vins'],
-    cover_image_url: 'https://domainedesainteanne.fr/images/accueil-vigne.jpeg',
-    cover_image_alt: 'Les vignes du Domaine de Sainte Anne',
+    images: [COVER, INLINE],
     reading_time_min: 4,
     published_at: '2026-09-20T08:00:00Z',
     updated_at: '2026-09-20T08:00:00Z',
@@ -35,8 +43,7 @@ module.exports = [
     faq: [],
     category: 'pairings',
     tags: [],
-    cover_image_url: 'https://domainedesainteanne.fr/images/accueil-vigne.jpeg',
-    cover_image_alt: 'The vineyards of Domaine de Sainte Anne',
+    images: [{ ...COVER, alt: 'The vineyards of Domaine de Sainte Anne' }],
     reading_time_min: 3,
     published_at: '2026-09-20T08:00:00Z',
     updated_at: '2026-09-20T08:00:00Z',

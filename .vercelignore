@@ -15,3 +15,6 @@ etat-des-lieux-site.md
 wetransfer_photos-domaine_2026-07-02_1106/
 
 node_modules/
+
+# Tests (inutiles en ligne)
+test/

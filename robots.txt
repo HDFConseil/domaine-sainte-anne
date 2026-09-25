@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+# Fonctions du site : leurs pages sont servies sous /actualites et /en/news.
+Disallow: /api/
 
 Sitemap: https://domainedesainteanne.fr/sitemap.xml
 Sitemap: https://domainedesainteanne.fr/actualites/sitemap.xml
