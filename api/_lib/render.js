@@ -192,6 +192,8 @@ ${body}
 </script>
 <!-- Vercel Web Analytics — mesure d'audience anonyme, sans cookie -->
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- GoatCounter — mesure d'audience et clics utiles, sans cookie (voir /suivi.js) -->
+<script defer src="/suivi.js"></script>
 </body>
 </html>`;
 }
