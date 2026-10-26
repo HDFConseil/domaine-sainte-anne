@@ -18,3 +18,6 @@ node_modules/
 
 # Tests (inutiles en ligne)
 test/
+
+# Outils internes (rapport hebdo, etc.) — ne pas déployer
+outils/
